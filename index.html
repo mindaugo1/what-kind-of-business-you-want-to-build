@@ -198,6 +198,82 @@
   @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
   .builder .pct { font-size: 12px; color: var(--muted); font-weight: 700; text-align: right; margin-top: -4px; }
 
+  /* premium profile intake card */
+  .suggestion.profile-intake {
+    padding: 0; border: none; background: none; box-shadow: none; overflow: visible;
+  }
+  .profile-intake .pi-head {
+    display: flex; align-items: center; gap: 13px;
+    padding: 16px; margin: 0;
+    border-radius: 16px 16px 0 0;
+    background:
+      radial-gradient(120px 80px at 12% 0%, rgba(255,255,255,0.5), transparent),
+      linear-gradient(135deg, var(--brand), var(--brand-2));
+    color: #fff;
+  }
+  .profile-intake .pi-badge {
+    width: 46px; height: 46px; border-radius: 13px; flex-shrink: 0;
+    display: grid; place-items: center; color: #fff;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.28);
+    backdrop-filter: blur(4px);
+  }
+  .profile-intake .pi-badge svg { width: 24px; height: 24px; }
+  .profile-intake .pi-title b { display: block; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; text-transform: capitalize; }
+  .profile-intake .pi-title span { font-size: 12.5px; opacity: 0.9; }
+
+  .profile-intake .profile-form {
+    display: flex; flex-direction: column; gap: 15px;
+    padding: 18px 16px 16px; margin: 0;
+    background: #fff; border: 1px solid var(--line); border-top: none;
+    border-radius: 0 0 16px 16px; box-shadow: var(--shadow-sm);
+  }
+  .profile-intake .field { display: flex; flex-direction: column; gap: 7px; }
+  .profile-intake .field > span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .profile-intake .input-wrap { position: relative; display: flex; align-items: center; }
+  .profile-intake .input-wrap .fi { position: absolute; left: 13px; width: 17px; height: 17px; color: var(--faint); pointer-events: none; transition: color 0.18s; }
+  .profile-intake .input-wrap input {
+    width: 100%; background: var(--bg); border: 1.5px solid var(--line-2); color: var(--ink);
+    border-radius: 12px; padding: 12px 14px 12px 40px; font-size: 14px; outline: none;
+    font-family: var(--font); transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  }
+  .profile-intake .input-wrap input::placeholder { color: var(--faint); }
+  .profile-intake .input-wrap input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-ring); background: #fff; }
+  .profile-intake .input-wrap:focus-within .fi { color: var(--brand); }
+
+  .profile-intake .swatches { display: flex; gap: 10px; }
+  .profile-intake .swatch {
+    width: 34px; height: 34px; border-radius: 11px; cursor: pointer; padding: 0;
+    display: grid; place-items: center; border: none;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 4px 10px -4px var(--sw);
+    transition: transform 0.15s var(--ease), box-shadow 0.15s;
+  }
+  .profile-intake .swatch:hover { transform: translateY(-2px) scale(1.06); }
+  .profile-intake .swatch .sw-check { width: 17px; height: 17px; opacity: 0; transform: scale(0.5); transition: opacity 0.15s, transform 0.15s var(--ease); }
+  .profile-intake .swatch.selected { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--sw), 0 6px 14px -4px var(--sw); }
+  .profile-intake .swatch.selected .sw-check { opacity: 1; transform: scale(1); }
+
+  .profile-intake .pi-save {
+    margin-top: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px 18px; font-size: 14.5px; font-weight: 700;
+    box-shadow: 0 12px 26px -10px var(--brand-ring);
+  }
+  .profile-intake .pi-save svg { width: 18px; height: 18px; transition: transform 0.18s var(--ease); }
+  .profile-intake .pi-save:hover svg { transform: translateX(3px); }
+
+  /* dashboard business profile card */
+  .profile-card {
+    background: linear-gradient(140deg, var(--brand-soft), #fff);
+    border: 1px solid #e4dfff; border-radius: 16px; padding: 16px; margin-bottom: 18px;
+    animation: tileIn 0.5s var(--ease);
+  }
+  .profile-card .pc-head { display: flex; align-items: center; gap: 12px; }
+  .profile-card .pc-avatar { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+  .profile-card .pc-head > div { flex: 1; }
+  .profile-card .pc-head b { display: block; font-size: 15px; font-weight: 700; }
+  .profile-card .pc-head span { font-size: 12px; color: var(--muted); text-transform: capitalize; }
+  .profile-card .pc-color { width: 18px; height: 18px; border-radius: 6px; box-shadow: 0 0 0 1px var(--line-2); }
+  .profile-card .pc-note { margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--brand); background: rgba(91,75,255,0.06); border-radius: 10px; padding: 9px 11px; }
+
   .suggestion .other-form { display: flex; gap: 8px; }
   .suggestion .other-input {
     flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line-2); color: var(--ink);
@@ -356,7 +432,7 @@
     { match: ['bakery', 'cafe', 'café', 'coffee', 'restaurant', 'pizza', 'food', 'catering', 'kitchen', 'diner'],
       picks: ['menu', 'eshop', 'loyalty', 'reach'] },
     { match: ['yoga', 'fitness', 'gym', 'studio', 'retreat', 'spa', 'wellness', 'salon', 'barber', 'massage'],
-      picks: ['booking', 'website', 'loyalty', 'reach'] },
+      picks: ['booking', 'website', 'loyalty'] },
     { match: ['rental', 'car', 'auto', 'taxi', 'tour', 'travel', 'hotel', 'rent'],
       picks: ['booking', 'website', 'crm', 'reach'] },
     { match: ['pet', 'grooming', 'vet', 'dog', 'clinic', 'dentist', 'doctor', 'therapy', 'lawyer', 'consult'],
@@ -379,6 +455,8 @@
   }
 
   let builtCount = 0;
+  let businessProfile = null;
+  const BRAND_COLORS = ['#5b4bff', '#e8590c', '#2f9e44', '#1971c2', '#e64980', '#111827'];
 
   function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
   function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
@@ -452,14 +530,120 @@
     const clean = text.replace(/\s*[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*$/u, '').trim();
     const businessNoun = clean.replace(/^(a|an|the)\s+/i, '').trim().toLowerCase();
     await botSay(`Love it — a ${businessNoun} business. 🎯`, 1000);
-    await botSay(`Here’s what I’d set up for a ${businessNoun}. Accept the ones you like:`, 1050);
+    await botSay('First, a few quick details. I’ll reuse these across everything you build — one profile, every site & campaign.', 1150);
+    addProfileForm(businessNoun);
+  }
 
+  function addProfileForm(businessNoun) {
+    const row = document.createElement('div');
+    row.className = 'row bot full';
+    const swatches = BRAND_COLORS.map((color, index) =>
+      `<button type="button" class="swatch${index === 0 ? ' selected' : ''}" data-color="${color}" style="--sw:${color};background:${color}" aria-label="brand color">
+         <svg class="sw-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+       </button>`
+    ).join('');
+    row.innerHTML = `
+      <div class="avatar">✦</div>
+      <div class="suggestion profile-intake">
+        <div class="pi-head">
+          <div class="pi-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M13.5 9.5H18M13.5 13H18M5.5 16.2c.7-1.3 1.9-1.9 3-1.9s2.3.6 3 1.9"/></svg>
+          </div>
+          <div class="pi-title">
+            <b>Set up your ${businessNoun}</b>
+            <span>Tell me once — I’ll reuse it everywhere ♻️</span>
+          </div>
+        </div>
+        <form class="profile-form">
+          <label class="field">
+            <span>Business name</span>
+            <div class="input-wrap">
+              <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-4.5A1 1 0 0 1 5.4 4h13.2a1 1 0 0 1 .9.6L21 9"/><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg>
+              <input class="pf-name" type="text" placeholder="e.g. Sunrise ${businessNoun}" autocomplete="off" />
+            </div>
+          </label>
+          <label class="field">
+            <span>Location</span>
+            <div class="input-wrap">
+              <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <input class="pf-loc" type="text" placeholder="e.g. Lisbon, Portugal" autocomplete="off" />
+            </div>
+          </label>
+          <div class="field">
+            <span>Brand color</span>
+            <div class="swatches">${swatches}</div>
+          </div>
+          <button type="submit" class="btn btn-go pi-save">
+            <span>Save profile</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+      </div>
+    `;
+    const card = row.querySelector('.suggestion');
+    let selectedColor = BRAND_COLORS[0];
+    card.querySelectorAll('.swatch').forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        card.querySelectorAll('.swatch').forEach((other) => other.classList.remove('selected'));
+        swatch.classList.add('selected');
+        selectedColor = swatch.dataset.color;
+      });
+    });
+    card.querySelector('.profile-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const name = card.querySelector('.pf-name').value.trim() || ('Your ' + businessNoun);
+      const location = card.querySelector('.pf-loc').value.trim() || '—';
+      businessProfile = { type: businessNoun, name, location, color: selectedColor };
+      renderProfileConfirmed(card, businessNoun);
+    });
+    messagesEl.appendChild(row);
+    scrollToBottom();
+  }
+
+  async function renderProfileConfirmed(card, businessNoun) {
+    card.classList.add('done-state');
+    card.innerHTML = `
+      <div class="done-row">
+        <div class="check">✓</div>
+        <div class="txt">
+          <b>Business profile saved</b>
+          <span>Reused across every site & campaign you build</span>
+        </div>
+      </div>
+    `;
+    renderDashboardProfile();
+    scrollToBottom();
+    await botSay(`Perfect — I’ll apply the ${businessProfile.name} profile to everything below. Accept the ones you like:`, 1050);
     for (const suggestion of getSuggestions(businessNoun)) {
       await sleep(650);
       addSuggestion(suggestion);
     }
     await sleep(650);
     addOtherSuggestion();
+  }
+
+  function renderDashboardProfile() {
+    emptyEl.style.display = 'none';
+    let profileEl = document.getElementById('profile-card');
+    if (!profileEl) {
+      profileEl = document.createElement('div');
+      profileEl.id = 'profile-card';
+      profileEl.className = 'profile-card';
+      dashSub.parentElement.parentElement.after(profileEl);
+    }
+    profileEl.innerHTML = `
+      <div class="pc-head">
+        <span class="pc-avatar" style="background:${businessProfile.color}">${businessProfile.name.charAt(0).toUpperCase()}</span>
+        <div>
+          <b>${businessProfile.name}</b>
+          <span>${businessProfile.type} · ${businessProfile.location}</span>
+        </div>
+        <span class="pc-color" style="background:${businessProfile.color}" title="Brand color"></span>
+      </div>
+      <div class="pc-note">♻️ This profile is reused across every site & campaign you build.</div>
+    `;
+    dashSub.textContent = 'Your business profile + everything you build.';
+    buildsEl.style.display = 'flex';
   }
 
   composer.addEventListener('submit', (event) => {
@@ -558,7 +742,9 @@
     const bar = card.querySelector('.bar > i');
     const pct = card.querySelector('.pct');
     const stepText = card.querySelector('.step-text');
-    const steps = suggestion.buildSteps;
+    const steps = businessProfile
+      ? [`Applying your ${businessProfile.name} profile…`, ...suggestion.buildSteps]
+      : suggestion.buildSteps;
     let stepIndex = 0;
 
     function nextStep() {
@@ -604,7 +790,7 @@
     builtCount++;
     countEl.textContent = builtCount + (builtCount === 1 ? ' app' : ' apps');
     countEl.style.display = 'inline-block';
-    dashSub.textContent = 'Your live products.';
+    dashSub.textContent = businessProfile ? 'Your business profile + live products.' : 'Your live products.';
 
     const tile = document.createElement('div');
     tile.className = 'build-tile';
