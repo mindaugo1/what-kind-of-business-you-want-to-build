@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BusinessBuilder — Build your business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f5fb;
+    --bg-grad-1: #eef0fb;
+    --bg-grad-2: #f7f5ff;
+    --surface: #ffffff;
+    --ink: #14162b;
+    --ink-2: #454a63;
+    --muted: #8b90a8;
+    --faint: #b9bdd0;
+    --line: #e9eaf2;
+    --line-2: #dfe1ee;
+    --brand: #5b4bff;
+    --brand-2: #8a6bff;
+    --brand-soft: #f0edff;
+    --brand-ring: rgba(91, 75, 255, 0.18);
+    --good: #10b981;
+    --good-soft: #e7f8f1;
+    --radius: 22px;
+    --radius-sm: 13px;
+    --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --shadow-sm: 0 1px 2px rgba(20, 22, 43, 0.04), 0 4px 12px rgba(20, 22, 43, 0.05);
+    --shadow: 0 10px 40px -12px rgba(20, 22, 43, 0.14);
+    --shadow-lg: 0 30px 60px -20px rgba(20, 22, 43, 0.22);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background:
+      radial-gradient(900px 500px at 100% -5%, var(--bg-grad-2), transparent 60%),
+      radial-gradient(800px 500px at -5% 0%, var(--bg-grad-1), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 32px;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .logo {
+    width: 34px; height: 34px; border-radius: 11px;
+    background: linear-gradient(140deg, var(--brand), var(--brand-2));
+    display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 16px;
+    box-shadow: 0 6px 16px -4px var(--brand-ring);
+  }
+  header h1 { font-size: 16px; margin: 0; font-weight: 700; letter-spacing: -0.3px; }
+  header .tag { color: var(--muted); font-size: 13px; font-weight: 500; }
+  header .spacer { flex: 1; }
+  header .pill {
+    font-size: 12px; font-weight: 600; color: var(--brand);
+    padding: 6px 13px; border-radius: 999px;
+    background: var(--brand-soft); border: 1px solid #e4dfff;
+  }
+
+  main {
+    flex: 1; width: 100%; max-width: 1240px; margin: 0 auto;
+    padding: 32px; display: grid; grid-template-columns: 440px 1fr; gap: 28px;
+    align-items: stretch;
+  }
+  @media (max-width: 940px) { main { grid-template-columns: 1fr; } }
+
+  .card-surface {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- Chat ---------- */
+  .chat { display: flex; flex-direction: column; height: min(680px, 82vh); overflow: hidden; }
+  .chat-head { padding: 18px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; }
+  .chat-head .ava {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: linear-gradient(140deg, var(--brand), var(--brand-2));
+    display: grid; place-items: center; color: #fff; font-size: 17px;
+    box-shadow: 0 6px 16px -6px var(--brand-ring);
+  }
+  .chat-head .who { font-weight: 700; font-size: 14px; }
+  .chat-head .status { font-size: 12px; color: var(--good); display: flex; align-items: center; gap: 5px; margin-top: 2px; font-weight: 500; }
+  .chat-head .status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
+
+  .messages { flex: 1; padding: 22px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
+  .messages::-webkit-scrollbar { width: 7px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 8px; }
+
+  .row { display: flex; gap: 9px; align-items: flex-end; max-width: 92%; animation: fadeUp 0.4s var(--ease); }
+  .row.user { align-self: flex-end; flex-direction: row-reverse; }
+  .row.full { max-width: 100%; }
+  .row .avatar { width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0; display: grid; place-items: center; font-size: 13px; }
+  .row.bot .avatar { background: linear-gradient(140deg, var(--brand), var(--brand-2)); color: #fff; }
+  .row.user .avatar { background: var(--bg); border: 1px solid var(--line-2); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .bubble { padding: 11px 15px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+  .row.bot .bubble { background: var(--bg); color: var(--ink); border-bottom-left-radius: 5px; }
+  .row.user .bubble {
+    background: linear-gradient(140deg, var(--brand), var(--brand-2));
+    color: #fff; border-bottom-right-radius: 5px;
+    box-shadow: 0 8px 20px -10px var(--brand-ring);
+  }
+  /* emphasized hero greeting */
+  .hero-greeting {
+    align-self: stretch; max-width: 100%;
+    padding: 22px 20px; margin-bottom: 2px;
+    background: linear-gradient(140deg, var(--brand-soft), #fff);
+    border: 1px solid #e4dfff; border-radius: 18px;
+    animation: fadeUp 0.5s var(--ease);
+  }
+  .hero-greeting .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 700; color: var(--brand);
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;
+  }
+  .hero-greeting h2 {
+    margin: 0; font-size: 22px; font-weight: 800; line-height: 1.25;
+    letter-spacing: -0.5px; color: var(--ink);
+  }
+  .hero-greeting h2 .accent {
+    background: linear-gradient(120deg, var(--brand), var(--brand-2));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .typing { display: inline-flex; gap: 5px; padding: 3px 0; }
+  .typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); animation: blink 1.3s infinite; }
+  .typing span:nth-child(2) { animation-delay: .18s; }
+  .typing span:nth-child(3) { animation-delay: .36s; }
+  @keyframes blink { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-2px); } }
+
+  /* suggestion card inside chat */
+  .suggestion {
+    flex: 1; background: var(--surface); border: 1px solid var(--line-2);
+    border-radius: 16px; border-bottom-left-radius: 5px; padding: 15px;
+    box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 11px;
+  }
+  .suggestion .top { display: flex; align-items: center; gap: 11px; }
+  .suggestion .icon { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 21px; background: var(--brand-soft); border: 1px solid #ece8ff; flex-shrink: 0; }
+  .suggestion .headline { font-size: 13px; color: var(--muted); line-height: 1.45; }
+  .suggestion .headline b { color: var(--ink); font-weight: 700; }
+  .suggestion .actions { display: flex; gap: 8px; }
+  .suggestion .actions .btn { flex: 1; padding: 9px 10px; font-size: 13px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 6px; animation: fadeUp 0.4s var(--ease); }
+  .chip {
+    font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--brand); cursor: pointer;
+    padding: 8px 13px; border-radius: 999px; background: var(--brand-soft); border: 1px solid #e4dfff;
+    transition: all 0.18s var(--ease);
+  }
+  .chip:hover { background: #e7e2ff; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+
+  .composer { border-top: 1px solid var(--line); padding: 14px; display: flex; gap: 10px; }
+  .composer input {
+    flex: 1; background: var(--bg); border: 1px solid var(--line-2); color: var(--ink);
+    border-radius: var(--radius-sm); padding: 12px 15px; font-size: 14px; outline: none;
+    font-family: var(--font); transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .composer input::placeholder { color: var(--faint); }
+  .composer input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-ring); background: #fff; }
+
+  .btn { font-family: var(--font); font-weight: 600; font-size: 14px; cursor: pointer; border: none; border-radius: var(--radius-sm); transition: transform 0.15s var(--ease), box-shadow 0.15s, opacity 0.15s; }
+  .btn-primary { background: linear-gradient(140deg, var(--brand), var(--brand-2)); color: #fff; padding: 12px 20px; box-shadow: 0 10px 22px -10px var(--brand-ring); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 26px -8px var(--brand-ring); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn:disabled { opacity: .5; cursor: default; transform: none !important; box-shadow: none; }
+  .btn-ghost { background: #fff; color: var(--ink-2); border: 1px solid var(--line-2); }
+  .btn-ghost:hover { background: var(--bg); border-color: var(--faint); }
+  .btn-go { background: linear-gradient(140deg, var(--brand), var(--brand-2)); color: #fff; box-shadow: 0 8px 18px -10px var(--brand-ring); }
+  .btn-go:hover { transform: translateY(-1px); }
+
+  /* inline builder in chat */
+  .builder { display: flex; flex-direction: column; gap: 11px; }
+  .builder .step { font-size: 13px; color: var(--ink-2); font-weight: 500; display: flex; align-items: center; gap: 9px; }
+  .builder .spin { width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--line-2); border-top-color: var(--brand); animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .step-text { animation: fadeUp 0.3s var(--ease); }
+  .builder .bar { height: 8px; border-radius: 6px; background: var(--bg); overflow: hidden; }
+  .builder .bar > i { display: block; height: 100%; width: 0%; border-radius: 6px; position: relative; overflow: hidden; background: linear-gradient(90deg, var(--brand), var(--brand-2)); transition: width 0.5s var(--ease); }
+  .builder .bar > i::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent); animation: shimmer 1.3s infinite; }
+  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+  .builder .pct { font-size: 12px; color: var(--muted); font-weight: 700; text-align: right; margin-top: -4px; }
+
+  .suggestion.done-state { border-color: #c9efdd; background: linear-gradient(180deg, #f5fdf9, #fff); }
+  .suggestion .done-row { display: flex; align-items: center; gap: 11px; }
+  .suggestion .check { width: 40px; height: 40px; border-radius: 11px; background: var(--good-soft); color: var(--good); display: grid; place-items: center; font-size: 20px; flex-shrink: 0; animation: pop 0.4s var(--ease); }
+  @keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
+  .suggestion .done-row .txt b { display: block; font-size: 14px; }
+  .suggestion .done-row .txt span { font-size: 12px; color: var(--muted); }
+
+  /* ---------- Dashboard ---------- */
+  .dashboard { padding: 28px; display: flex; flex-direction: column; height: min(680px, 82vh); overflow-y: auto; }
+  .dash-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
+  .dash-head h2 { margin: 0 0 5px; font-size: 23px; font-weight: 800; letter-spacing: -0.5px; }
+  .dash-head p { margin: 0; color: var(--muted); font-size: 14px; }
+  .dash-head .count { font-size: 12px; font-weight: 700; color: var(--brand); padding: 7px 13px; border-radius: 999px; white-space: nowrap; background: var(--brand-soft); border: 1px solid #e4dfff; }
+
+  .empty { flex: 1; display: grid; place-items: center; text-align: center; min-height: 430px; }
+  .empty .orb {
+    width: 88px; height: 88px; border-radius: 26px; margin: 0 auto 20px;
+    background: linear-gradient(140deg, var(--brand-soft), #fff);
+    border: 1px solid var(--line-2); display: grid; place-items: center; font-size: 40px;
+    box-shadow: var(--shadow); animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .empty h3 { color: var(--ink); margin: 0 0 6px; font-size: 17px; font-weight: 700; }
+  .empty p { margin: 0; font-size: 14px; color: var(--muted); max-width: 280px; }
+
+  .builds { display: flex; flex-direction: column; gap: 12px; }
+  .build-tile {
+    display: flex; align-items: center; gap: 14px; padding: 16px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    animation: tileIn 0.5s var(--ease);
+  }
+  @keyframes tileIn { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .build-tile .icon { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font-size: 23px; background: var(--brand-soft); border: 1px solid #ece8ff; flex-shrink: 0; }
+  .build-tile .meta { flex: 1; }
+  .build-tile .meta b { font-size: 15px; font-weight: 700; display: block; }
+  .build-tile .meta .live { font-size: 12px; color: var(--good); font-weight: 600; display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; }
+  .build-tile .meta .live .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
+  .build-tile .open { padding: 9px 15px; font-size: 13px; }
+
+  .confetti { position: fixed; width: 9px; height: 14px; top: -20px; z-index: 50; opacity: 0.95; pointer-events: none; border-radius: 2px; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: 0; } }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">B</div>
+    <h1>BusinessBuilder</h1>
+    <span class="tag">AI business builder</span>
+    <span class="spacer"></span>
+    <span class="pill">POC demo</span>
+  </header>
+
+  <main>
+    <section class="card-surface chat">
+      <div class="chat-head">
+        <div class="ava">✦</div>
+        <div>
+          <div class="who">BusinessBuilder Assistant</div>
+          <div class="status"><span class="dot"></span> Online</div>
+        </div>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div id="chips" class="chips" style="display:none"></div>
+      <form class="composer" id="composer">
+        <input id="input" type="text" placeholder="Type your answer…" autocomplete="off" />
+        <button type="submit" id="send" class="btn btn-primary">Send</button>
+      </form>
+    </section>
+
+    <section class="card-surface dashboard">
+      <div class="dash-head">
+        <div>
+          <h2>Your dashboard</h2>
+          <p id="dash-sub">Everything you build will show up here.</p>
+        </div>
+        <span class="count" id="count" style="display:none"></span>
+      </div>
+      <div class="empty" id="empty">
+        <div>
+          <div class="orb">✨</div>
+          <h3>Nothing built yet</h3>
+          <p>Chat with the assistant and accept a suggestion to see it appear here.</p>
+        </div>
+      </div>
+      <div class="builds" id="builds" style="display:none"></div>
+    </section>
+  </main>
+
+<script>
+  const messagesEl = document.getElementById('messages');
+  const composer = document.getElementById('composer');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send');
+  const chipsEl = document.getElementById('chips');
+  const buildsEl = document.getElementById('builds');
+  const emptyEl = document.getElementById('empty');
+  const dashSub = document.getElementById('dash-sub');
+  const countEl = document.getElementById('count');
+
+  const QUICK_REPLIES = ['A bakery 🥐', 'A yoga retreat 🧘', 'A car rental 🚗', 'A pet grooming service 🐩'];
+
+  // Catalog of products the assistant can build. {biz} is replaced with the user's business.
+  const PRODUCTS = {
+    booking: { icon: '📅', label: 'booking system', title: 'booking system', tool: 'Builder',
+      headline: 'Let your {biz} clients <b>book online</b> — set up a booking system with Builder.',
+      buildSteps: ['Creating services & slots…', 'Building the calendar…', 'Enabling online payments…'],
+      doneMsg: 'booking system · accepting bookings' },
+    eshop: { icon: '🛒', label: 'eshop', title: 'eshop', tool: 'Horizons',
+      headline: 'Sell your {biz} products — <b>open an online shop</b> with Horizons.',
+      buildSteps: ['Generating storefront…', 'Adding product catalog…', 'Setting up checkout & payments…'],
+      doneMsg: 'eshop · live' },
+    website: { icon: '🌐', label: 'business website', title: 'business website', tool: 'Horizons',
+      headline: 'Give your {biz} an <b>online presence</b> — build a website with Horizons.',
+      buildSteps: ['Designing pages & layout…', 'Writing copy & sections…', 'Optimizing for SEO…'],
+      doneMsg: 'website · published' },
+    monosite: { icon: '🚀', label: 'promo monosite', title: 'promo monosite', tool: 'Horizons',
+      headline: 'Promote your {biz} — <b>launch a one-page promo site</b> with Horizons.',
+      buildSteps: ['Drafting copy & hero…', 'Composing sections…', 'Optimizing for conversion…'],
+      doneMsg: 'monosite · published' },
+    menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Horizons',
+      headline: 'Show off your {biz} — <b>publish a digital menu</b> with Horizons.',
+      buildSteps: ['Building menu layout…', 'Adding items & prices…', 'Generating a QR code…'],
+      doneMsg: 'digital menu · published' },
+    crm: { icon: '📇', label: 'CRM', title: 'CRM', tool: 'Builder',
+      headline: 'Manage your {biz} customers — <b>organize every lead</b> with Builder.',
+      buildSteps: ['Scaffolding data models…', 'Designing pipeline & views…', 'Wiring up automations…'],
+      doneMsg: 'CRM · ready to use' },
+    loyalty: { icon: '🎟️', label: 'loyalty program', title: 'loyalty program', tool: 'Builder',
+      headline: 'Keep {biz} customers coming back — <b>launch a loyalty program</b> with Builder.',
+      buildSteps: ['Defining rewards & tiers…', 'Setting up points engine…', 'Adding digital punch cards…'],
+      doneMsg: 'loyalty program · active' },
+    reach: { icon: '📣', label: 'Reach campaign', title: 'email campaign', tool: 'Reach',
+      headline: 'Grow your {biz} — <b>run an email campaign</b> with Reach.',
+      buildSteps: ['Building audience segments…', 'Writing email sequence…', 'Scheduling with Reach…'],
+      doneMsg: 'Reach campaign · scheduled' }
+  };
+
+  // Which products to suggest, matched on keywords in the answer. First match wins.
+  const PROFILES = [
+    { match: ['bakery', 'cafe', 'café', 'coffee', 'restaurant', 'pizza', 'food', 'catering', 'kitchen', 'diner'],
+      picks: ['menu', 'eshop', 'loyalty', 'reach'] },
+    { match: ['yoga', 'fitness', 'gym', 'studio', 'retreat', 'spa', 'wellness', 'salon', 'barber', 'massage'],
+      picks: ['booking', 'website', 'loyalty', 'reach'] },
+    { match: ['rental', 'car', 'auto', 'taxi', 'tour', 'travel', 'hotel', 'rent'],
+      picks: ['booking', 'website', 'crm', 'reach'] },
+    { match: ['pet', 'grooming', 'vet', 'dog', 'clinic', 'dentist', 'doctor', 'therapy', 'lawyer', 'consult'],
+      picks: ['booking', 'website', 'crm', 'reach'] },
+    { match: ['agency', 'freelance', 'design', 'marketing', 'photography', 'studio', 'portfolio'],
+      picks: ['website', 'crm', 'monosite', 'reach'] },
+    { match: ['shop', 'store', 'boutique', 'ecommerce', 'online', 'clothing', 'jewelry', 'craft'],
+      picks: ['eshop', 'website', 'loyalty', 'reach'] }
+  ];
+  const DEFAULT_PICKS = ['website', 'crm', 'reach', 'monosite'];
+
+  function getSuggestions(businessNoun) {
+    const lower = businessNoun.toLowerCase();
+    const profile = PROFILES.find((profile) => profile.match.some((keyword) => lower.includes(keyword)));
+    const picks = profile ? profile.picks : DEFAULT_PICKS;
+    return picks.map((productId) => {
+      const product = PRODUCTS[productId];
+      return { ...product, headline: product.headline.replace('{biz}', businessNoun) };
+    });
+  }
+
+  let builtCount = 0;
+
+  function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+  function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+  function addMessage(text, who) {
+    const row = document.createElement('div');
+    row.className = 'row ' + who;
+    row.innerHTML = `<div class="avatar">${who === 'bot' ? '✦' : '🙂'}</div><div class="bubble"></div>`;
+    row.querySelector('.bubble').textContent = text;
+    messagesEl.appendChild(row);
+    scrollToBottom();
+    return row;
+  }
+
+  function addTyping() {
+    const row = document.createElement('div');
+    row.className = 'row bot';
+    row.innerHTML = '<div class="avatar">✦</div><div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>';
+    messagesEl.appendChild(row);
+    scrollToBottom();
+    return row;
+  }
+
+  async function botSay(text, delay = 950) {
+    const typing = addTyping();
+    await sleep(delay);
+    typing.remove();
+    addMessage(text, 'bot');
+  }
+
+  let answered = false;
+
+  function showQuickReplies() {
+    chipsEl.innerHTML = '';
+    QUICK_REPLIES.forEach((reply) => {
+      const chip = document.createElement('button');
+      chip.className = 'chip'; chip.type = 'button'; chip.textContent = reply;
+      chip.addEventListener('click', () => submitAnswer(reply));
+      chipsEl.appendChild(chip);
+    });
+    chipsEl.style.display = 'flex';
+  }
+
+  function addHeroGreeting() {
+    const hero = document.createElement('div');
+    hero.className = 'hero-greeting';
+    hero.innerHTML = `
+      <div class="eyebrow">👋 Welcome to BusinessBuilder</div>
+      <h2>What business do you <span class="accent">want to build</span>?</h2>
+    `;
+    messagesEl.appendChild(hero);
+    scrollToBottom();
+  }
+
+  async function startConversation() {
+    await sleep(400);
+    addHeroGreeting();
+    await sleep(500);
+    showQuickReplies();
+  }
+
+  async function submitAnswer(text) {
+    if (!text || answered) return;
+    answered = true;
+    chipsEl.style.display = 'none';
+    addMessage(text, 'user');
+    input.value = '';
+    input.disabled = true;
+    sendBtn.disabled = true;
+
+    const clean = text.replace(/\s*[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*$/u, '').trim();
+    const businessNoun = clean.replace(/^(a|an|the)\s+/i, '').trim().toLowerCase();
+    await botSay(`Love it — a ${businessNoun} business. 🎯`, 1000);
+    await botSay(`Here’s what I’d set up for a ${businessNoun}. Accept the ones you like:`, 1050);
+
+    for (const suggestion of getSuggestions(businessNoun)) {
+      await sleep(650);
+      addSuggestion(suggestion);
+    }
+  }
+
+  composer.addEventListener('submit', (event) => {
+    event.preventDefault();
+    submitAnswer(input.value.trim());
+  });
+
+  function addSuggestion(suggestion) {
+    const row = document.createElement('div');
+    row.className = 'row bot full';
+    row.innerHTML = `
+      <div class="avatar">✦</div>
+      <div class="suggestion">
+        <div class="top">
+          <div class="icon">${suggestion.icon}</div>
+          <div class="headline">${suggestion.headline}</div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-go">Let's do it</button>
+        </div>
+      </div>
+    `;
+    const card = row.querySelector('.suggestion');
+    row.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, suggestion));
+    messagesEl.appendChild(row);
+    scrollToBottom();
+  }
+
+  function runBuilder(card, suggestion) {
+    card.innerHTML = `
+      <div class="top">
+        <div class="icon">${suggestion.icon}</div>
+        <div class="headline">Building your <b>${suggestion.title}</b> with ${suggestion.tool}…</div>
+      </div>
+      <div class="builder">
+        <div class="step"><span class="spin"></span><span class="step-text">Starting builder…</span></div>
+        <div class="bar"><i></i></div>
+        <div class="pct">0%</div>
+      </div>
+    `;
+    scrollToBottom();
+    const bar = card.querySelector('.bar > i');
+    const pct = card.querySelector('.pct');
+    const stepText = card.querySelector('.step-text');
+    const steps = suggestion.buildSteps;
+    let stepIndex = 0;
+
+    function nextStep() {
+      if (stepIndex < steps.length) {
+        stepText.style.animation = 'none';
+        void stepText.offsetWidth;
+        stepText.style.animation = '';
+        stepText.textContent = steps[stepIndex];
+        const percent = Math.round(((stepIndex + 1) / (steps.length + 1)) * 100);
+        bar.style.width = percent + '%';
+        pct.textContent = percent + '%';
+        stepIndex++;
+        setTimeout(nextStep, 1150);
+      } else {
+        bar.style.width = '100%';
+        pct.textContent = '100%';
+        stepText.textContent = 'Finishing up…';
+        setTimeout(() => finishBuilder(card, suggestion), 850);
+      }
+    }
+    setTimeout(nextStep, 450);
+  }
+
+  function finishBuilder(card, suggestion) {
+    card.classList.add('done-state');
+    card.innerHTML = `
+      <div class="done-row">
+        <div class="check">✓</div>
+        <div class="txt">
+          <b>${suggestion.title} — done!</b>
+          <span>${suggestion.doneMsg}</span>
+        </div>
+      </div>
+    `;
+    fireConfetti(card);
+    addToDashboard(suggestion);
+    scrollToBottom();
+  }
+
+  function addToDashboard(suggestion) {
+    emptyEl.style.display = 'none';
+    buildsEl.style.display = 'flex';
+    builtCount++;
+    countEl.textContent = builtCount + (builtCount === 1 ? ' app' : ' apps');
+    countEl.style.display = 'inline-block';
+    dashSub.textContent = 'Your live products.';
+
+    const tile = document.createElement('div');
+    tile.className = 'build-tile';
+    tile.innerHTML = `
+      <div class="icon">${suggestion.icon}</div>
+      <div class="meta">
+        <b>${suggestion.title.charAt(0).toUpperCase() + suggestion.title.slice(1)}</b>
+        <span class="live"><span class="dot"></span> ${suggestion.doneMsg.split('·')[1].trim()}</span>
+      </div>
+      <button class="btn btn-primary open">Open</button>
+    `;
+    tile.querySelector('.open').addEventListener('click', () => {
+      addMessage('🎉 Opening your ' + suggestion.label + '…', 'bot');
+    });
+    buildsEl.appendChild(tile);
+  }
+
+  function fireConfetti(anchor) {
+    const rect = anchor.getBoundingClientRect();
+    const colors = ['#5b4bff', '#8a6bff', '#10b981', '#ffd166', '#ff6b9d'];
+    for (let piece = 0; piece < 22; piece++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = (rect.left + rect.width / 2 + (piece % 2 ? 1 : -1) * (piece * 4)) + 'px';
+      confetti.style.top = (rect.top + rect.height / 2) + 'px';
+      confetti.style.background = colors[piece % colors.length];
+      confetti.style.animationDuration = (1.6 + (piece % 5) * 0.25) + 's';
+      confetti.style.transform = 'rotate(' + (piece * 40) + 'deg)';
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 3200);
+    }
+  }
+
+  startConversation();
+</script>
+</body>
+</html>
