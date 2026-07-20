@@ -198,6 +198,21 @@
   @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
   .builder .pct { font-size: 12px; color: var(--muted); font-weight: 700; text-align: right; margin-top: -4px; }
 
+  .suggestion .other-form { display: flex; gap: 8px; }
+  .suggestion .other-input {
+    flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line-2); color: var(--ink);
+    border-radius: 11px; padding: 10px 13px; font-size: 13px; outline: none;
+    font-family: var(--font); transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .suggestion .other-input::placeholder { color: var(--faint); }
+  .suggestion .other-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-ring); background: #fff; }
+  .suggestion .other-form .btn { padding: 10px 15px; font-size: 13px; white-space: nowrap; }
+
+  .suggestion.saved-state { border-color: #f0e2b8; background: linear-gradient(180deg, #fffdf4, #fff); }
+  .suggestion .saved-row { display: flex; align-items: center; gap: 10px; }
+  .suggestion .saved-tag { flex: 1; font-size: 13px; font-weight: 700; color: #b7891a; }
+  .suggestion .saved-row .btn { padding: 9px 14px; font-size: 13px; }
+
   .suggestion.done-state { border-color: #c9efdd; background: linear-gradient(180deg, #f5fdf9, #fff); }
   .suggestion .done-row { display: flex; align-items: center; gap: 11px; }
   .suggestion .check { width: 40px; height: 40px; border-radius: 11px; background: var(--good-soft); color: var(--good); display: grid; place-items: center; font-size: 20px; flex-shrink: 0; animation: pop 0.4s var(--ease); }
@@ -443,6 +458,8 @@
       await sleep(650);
       addSuggestion(suggestion);
     }
+    await sleep(650);
+    addOtherSuggestion();
   }
 
   composer.addEventListener('submit', (event) => {
@@ -461,13 +478,67 @@
           <div class="headline">${suggestion.headline}</div>
         </div>
         <div class="actions">
+          <button class="btn btn-ghost btn-save">Save for later</button>
           <button class="btn btn-go">Let's do it</button>
         </div>
       </div>
     `;
     const card = row.querySelector('.suggestion');
     row.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, suggestion));
+    row.querySelector('.btn-save').addEventListener('click', () => saveForLater(card, suggestion));
     messagesEl.appendChild(row);
+    scrollToBottom();
+  }
+
+  function addOtherSuggestion() {
+    const row = document.createElement('div');
+    row.className = 'row bot full';
+    row.innerHTML = `
+      <div class="avatar">✦</div>
+      <div class="suggestion">
+        <div class="top">
+          <div class="icon">✨</div>
+          <div class="headline">Something else in mind? <b>Tell me exactly what to build.</b></div>
+        </div>
+        <form class="other-form">
+          <input class="other-input" type="text" placeholder="e.g. a table reservation system" autocomplete="off" />
+          <button type="submit" class="btn btn-go">Build it</button>
+        </form>
+      </div>
+    `;
+    const card = row.querySelector('.suggestion');
+    const form = row.querySelector('.other-form');
+    const input = row.querySelector('.other-input');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const wanted = input.value.trim();
+      if (!wanted) return;
+      const custom = {
+        icon: '✨',
+        label: wanted,
+        title: wanted,
+        tool: 'Builder',
+        buildSteps: ['Understanding your request…', 'Designing the solution…', 'Assembling with Builder…'],
+        doneMsg: wanted + ' · ready to use'
+      };
+      runBuilder(card, custom);
+    });
+    messagesEl.appendChild(row);
+    scrollToBottom();
+  }
+
+  function saveForLater(card, suggestion) {
+    card.classList.add('saved-state');
+    card.querySelector('.actions').outerHTML = `
+      <div class="saved-row">
+        <span class="saved-tag">⭐ Saved for later</span>
+        <button class="btn btn-go btn-build-now">Build now</button>
+      </div>
+    `;
+    card.querySelector('.btn-build-now').addEventListener('click', () => {
+      card.classList.remove('saved-state');
+      runBuilder(card, suggestion);
+    });
     scrollToBottom();
   }
 
