@@ -430,19 +430,19 @@
   // Which products to suggest, matched on keywords in the answer. First match wins.
   const PROFILES = [
     { match: ['bakery', 'cafe', 'café', 'coffee', 'restaurant', 'pizza', 'food', 'catering', 'kitchen', 'diner'],
-      picks: ['menu', 'eshop', 'loyalty', 'reach'] },
+      picks: ['menu', 'eshop', 'loyalty'] },
     { match: ['yoga', 'fitness', 'gym', 'studio', 'retreat', 'spa', 'wellness', 'salon', 'barber', 'massage'],
       picks: ['booking', 'website', 'loyalty'] },
     { match: ['rental', 'car', 'auto', 'taxi', 'tour', 'travel', 'hotel', 'rent'],
-      picks: ['booking', 'website', 'crm', 'reach'] },
+      picks: ['booking', 'website', 'crm'] },
     { match: ['pet', 'grooming', 'vet', 'dog', 'clinic', 'dentist', 'doctor', 'therapy', 'lawyer', 'consult'],
-      picks: ['booking', 'website', 'crm', 'reach'] },
+      picks: ['booking', 'website', 'crm'] },
     { match: ['agency', 'freelance', 'design', 'marketing', 'photography', 'studio', 'portfolio'],
-      picks: ['website', 'crm', 'monosite', 'reach'] },
+      picks: ['website', 'crm', 'monosite'] },
     { match: ['shop', 'store', 'boutique', 'ecommerce', 'online', 'clothing', 'jewelry', 'craft'],
-      picks: ['eshop', 'website', 'loyalty', 'reach'] }
+      picks: ['eshop', 'website', 'loyalty'] }
   ];
-  const DEFAULT_PICKS = ['website', 'crm', 'reach', 'monosite'];
+  const DEFAULT_PICKS = ['website', 'crm', 'monosite'];
 
   function getSuggestions(businessNoun) {
     const lower = businessNoun.toLowerCase();
