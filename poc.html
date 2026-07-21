@@ -337,7 +337,7 @@
   }
   function scrollIdeasToBottom() { ideasPanel.scrollTop = ideasPanel.scrollHeight; }
 
-  const QUICK_REPLIES = ['A bakery 🥐', 'A yoga retreat 🧘', 'A car rental 🚗', 'A pet grooming service 🐩'];
+  const QUICK_REPLIES = ['A bakery 🥐'];
 
   // Catalog of products the assistant can build. {biz} is replaced with the user's business.
   const PRODUCTS = {
@@ -364,19 +364,19 @@
     menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Drag & Drop', tools: ['Drag & Drop', 'Full AI'], estimateMins: 5,
       headline: 'Show off your {biz} — <b>publish a digital menu</b>.',
       buildSteps: ['Building menu layout…', 'Adding items & prices…', 'Generating a QR code…'],
-      doneMsg: 'digital menu · published', why: 'customers see everything you offer at a glance' },
+      doneMsg: 'digital menu · published', why: 'we’d design you a menu that feels like your place — easy to skim, a QR tap away from the table, and quick for you to update — so choosing feels effortless' },
     crm: { icon: '📇', label: 'CRM', title: 'CRM', tool: 'Drag & Drop',
       headline: 'Manage your {biz} customers — <b>organize every lead</b> with Drag & Drop.',
       buildSteps: ['Scaffolding data models…', 'Designing pipeline & views…', 'Wiring up automations…'],
       doneMsg: 'CRM · ready to use', why: 'every lead and customer stays organized' },
-    loyalty: { icon: '🎟️', label: 'loyalty program', title: 'loyalty program', tool: 'Drag & Drop',
-      headline: 'Keep {biz} customers coming back — <b>launch a loyalty program</b> with Drag & Drop.',
-      buildSteps: ['Defining rewards & tiers…', 'Setting up points engine…', 'Adding digital punch cards…'],
-      doneMsg: 'loyalty program · active', why: 'first-time buyers become regulars' },
+    loyalty: { icon: '🎁', label: 'rewards club', title: 'rewards club', tool: 'Drag & Drop',
+      headline: 'Keep your {biz} customers coming back — <b>launch a digital rewards club</b>.',
+      buildSteps: ['Designing your stamp card & tiers…', 'Wiring up the points & streak engine…', 'Adding auto-perks & referral rewards…'],
+      doneMsg: 'rewards club · live', why: 'we’d craft you a loyalty ritual worth returning for — a digital stamp card that lives on their phone, small unexpected treats, and a gentle referral loop — so your regulars feel looked after, not marketed to' },
     reach: { icon: '📣', label: 'Reach campaign', title: 'email campaign', tool: 'Reach',
       headline: 'Grow your {biz} — <b>run an email campaign</b> with Reach.',
       buildSteps: ['Building audience segments…', 'Writing email sequence…', 'Scheduling with Reach…'],
-      doneMsg: 'Reach campaign · scheduled', why: 'you can win customers back by email' }
+      doneMsg: 'Reach campaign · scheduled', why: 'we’d write you an email rhythm worth opening — a warm welcome, a gentle nudge when someone drifts, and a timely reason to return — in your voice, never a generic blast' }
   };
 
   // Which products to suggest, matched on keywords in the answer. First match wins.
