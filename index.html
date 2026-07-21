@@ -160,9 +160,19 @@
   .bubble .chat-spin { width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--line-2); border-top-color: var(--brand); animation: spin 0.7s linear infinite; }
   .bubble .plan-head { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; margin-bottom: 4px; }
   .bubble .plan-why { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; }
-  .bubble .plan-step { margin-bottom: 11px; }
-  .bubble .plan-step:last-child { margin-bottom: 0; }
-  .bubble .plan-badge { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: var(--brand); margin-bottom: 4px; }
+  .bubble .plan-step { margin: 0 -6px 5px; padding: 6px; border-radius: 10px; cursor: pointer; transition: background 0.15s var(--ease); }
+  .bubble .plan-step:last-child { margin-bottom: -1px; }
+  .bubble .plan-step:hover { background: var(--brand-soft); }
+  .bubble .plan-step-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .bubble .plan-badge { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: var(--brand); }
+  .bubble .plan-chat {
+    display: inline-flex; align-items: center; gap: 4px; border: none; background: transparent; cursor: pointer;
+    font-family: var(--font); font-size: 11px; font-weight: 700; color: var(--brand);
+    padding: 3px 8px; border-radius: 999px; opacity: 0; transition: opacity 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .bubble .plan-step:hover .plan-chat { opacity: 1; }
+  .bubble .plan-chat:hover { background: #fff; }
+  .bubble .plan-chat svg { width: 13px; height: 13px; flex-shrink: 0; }
   .bubble .plan-step ul { margin: 0; padding-left: 18px; }
   .bubble .plan-step li { font-size: 13px; line-height: 1.5; margin: 3px 0; color: var(--muted); }
   .bubble .plan-step li b { color: var(--ink); font-weight: 700; }
@@ -257,7 +267,8 @@
     background: linear-gradient(90deg, var(--brand), var(--brand-2));
   }
   .ideas-list .idea-cards { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; }
-  .ideas-list .idea-cards .suggestion { flex: 0 1 calc(33.333% - 8px); min-width: 0; border-bottom-left-radius: 16px; animation: fadeUp 0.4s var(--ease); }
+  .ideas-list .idea-cards .suggestion { flex: 0 1 calc(33.333% - 8px); min-width: 0; border-bottom-left-radius: 16px; animation: fadeUp 0.4s var(--ease); transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease); }
+  .ideas-list .idea-step.highlight .suggestion { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-ring); transform: translateY(-2px); }
 
   .empty { flex: 1; display: grid; place-items: center; text-align: center; min-height: 430px; }
   .empty .orb {
@@ -456,6 +467,7 @@
     row.innerHTML = `<div class="avatar">✦</div><div class="bubble">${html}</div>`;
     messagesEl.appendChild(row);
     scrollToBottom();
+    return row;
   }
 
   function addChatSpinner(text) {
@@ -574,18 +586,47 @@
     setTimeout(() => ideasPanel.classList.add('active'), 7000);
     const planSteps = groups.concat([[reachSuggestion]]);
     await botSay(`All set — here's the plan I put together for your ${businessNoun}. 👇`, 900);
-    await botSayHtml(buildPlanHtml(businessNoun, planSteps), 1400);
+    const planRow = await botSayHtml(buildPlanHtml(businessNoun, planSteps), 1400);
+    linkPlanHover(planRow, planSteps);
     await botSay('Pick whichever step you like on the right and I’ll build it. ✨', 1100);
   }
 
   function buildPlanHtml(businessNoun, steps) {
+    const sparkle = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>';
     const stepsHtml = steps.map((group, index) => {
       const items = group.map((pick) => `<li><b>${pick.title}</b> — ${pick.why}</li>`).join('');
-      return `<div class="plan-step"><span class="plan-badge">Step ${index + 1}</span><ul>${items}</ul></div>`;
+      return `<div class="plan-step" data-step="${index}">`
+        + `<div class="plan-step-head"><span class="plan-badge">Step ${index + 1}</span>`
+        + `<button type="button" class="plan-chat" title="Chat about this step" aria-label="Chat about this step">${sparkle} Chat</button></div>`
+        + `<ul>${items}</ul></div>`;
     }).join('');
     return `<div class="plan-head">📋 My plan for your ${businessNoun}</div>`
       + `<div class="plan-why">Get online &amp; selling first, then keep customers coming back, then grow.</div>`
       + stepsHtml;
+  }
+
+  // Hovering a plan step highlights the matching cards; the chat icon opens a chat about it.
+  function linkPlanHover(planRow, planSteps) {
+    planRow.querySelectorAll('.plan-step').forEach((planStep) => {
+      const stepIndex = Number(planStep.dataset.step);
+      const target = ideasListEl.querySelector(`.idea-step[data-step="${stepIndex}"]`);
+      if (target) {
+        planStep.addEventListener('mouseenter', () => target.classList.add('highlight'));
+        planStep.addEventListener('mouseleave', () => target.classList.remove('highlight'));
+      }
+      const chatButton = planStep.querySelector('.plan-chat');
+      if (chatButton) chatButton.addEventListener('click', () => chatAboutStep(planSteps[stepIndex]));
+    });
+  }
+
+  async function chatAboutStep(group) {
+    const titles = group.map((pick) => pick.title);
+    const label = titles.length > 1
+      ? titles.slice(0, -1).join(', ') + ' and ' + titles[titles.length - 1]
+      : titles[0];
+    addMessage(`Tell me more about the ${label}.`, 'user');
+    const details = group.map((pick) => `the ${pick.title} — ${pick.why}`).join('; ');
+    await botSay(`Happy to — ${details}. Hit “Build it” on any card whenever you’re ready. ✨`, 1100);
   }
 
   composer.addEventListener('submit', (event) => {
@@ -594,10 +635,11 @@
   });
 
   async function addIdeaStep(cards) {
-    const stepNumber = ideasListEl.children.length + 1;
+    const stepIndex = ideasListEl.children.length;
     const step = document.createElement('div');
     step.className = 'idea-step';
-    step.innerHTML = `<div class="step-header">Step ${stepNumber}</div><div class="idea-cards"></div>`;
+    step.dataset.step = stepIndex;
+    step.innerHTML = `<div class="step-header">Step ${stepIndex + 1}</div><div class="idea-cards"></div>`;
     const cardsWrap = step.querySelector('.idea-cards');
     ideasListEl.appendChild(step);
     scrollIdeasToBottom();
