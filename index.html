@@ -73,11 +73,11 @@
   }
 
   main {
-    flex: 1; width: 100%; max-width: 1240px; margin: 0 auto;
-    padding: 32px; display: grid; grid-template-columns: 440px 1fr; gap: 28px;
+    flex: 1; width: 100%; max-width: 1680px; margin: 0 auto;
+    padding: 32px 48px; display: grid; grid-template-columns: 440px 1fr; gap: 32px;
     align-items: stretch;
   }
-  @media (max-width: 940px) { main { grid-template-columns: 1fr; } }
+  @media (max-width: 1240px) { main { grid-template-columns: 1fr; } }
 
   .card-surface {
     background: var(--surface);
@@ -125,7 +125,10 @@
     background: linear-gradient(140deg, var(--brand-soft), #fff);
     border: 1px solid #e4dfff; border-radius: 18px;
     animation: fadeUp 0.5s var(--ease);
+    cursor: pointer; user-select: none;
+    transition: box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
   }
+  .hero-greeting:hover { box-shadow: 0 10px 26px -14px var(--brand-ring); transform: translateY(-1px); }
   .hero-greeting .eyebrow {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 12px; font-weight: 700; color: var(--brand);
@@ -134,7 +137,15 @@
   .hero-greeting h2 {
     margin: 0; font-size: 22px; font-weight: 800; line-height: 1.25;
     letter-spacing: -0.5px; color: var(--ink);
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
   }
+  .hero-greeting h2.swapping { opacity: 0; transform: translateY(6px); }
+  .hero-greeting .hero-dots { display: flex; gap: 6px; margin-top: 14px; }
+  .hero-greeting .hero-dot {
+    width: 7px; height: 7px; border-radius: 999px; background: #d9d3ff; padding: 0; border: none; cursor: pointer;
+    transition: width 0.25s var(--ease), background 0.25s var(--ease);
+  }
+  .hero-greeting .hero-dot.active { width: 20px; background: linear-gradient(120deg, var(--brand), var(--brand-2)); }
   .hero-greeting h2 .accent {
     background: linear-gradient(120deg, var(--brand), var(--brand-2));
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
@@ -145,6 +156,8 @@
   .typing span:nth-child(2) { animation-delay: .18s; }
   .typing span:nth-child(3) { animation-delay: .36s; }
   @keyframes blink { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-2px); } }
+  .bubble.spinner-bubble { display: inline-flex; align-items: center; gap: 9px; }
+  .bubble .chat-spin { width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--line-2); border-top-color: var(--brand); animation: spin 0.7s linear infinite; }
 
   /* suggestion card inside chat */
   .suggestion {
@@ -152,12 +165,21 @@
     border-radius: 16px; border-bottom-left-radius: 5px; padding: 15px;
     box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 11px;
   }
-  .suggestion .top { display: flex; align-items: center; gap: 11px; }
+  .suggestion .top { display: flex; align-items: flex-start; gap: 11px; }
   .suggestion .icon { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 21px; background: var(--brand-soft); border: 1px solid #ece8ff; flex-shrink: 0; }
-  .suggestion .headline { font-size: 13px; color: var(--muted); line-height: 1.45; }
+  .suggestion .headline { flex: 1; font-size: 13px; color: var(--muted); line-height: 1.45; }
   .suggestion .headline b { color: var(--ink); font-weight: 700; }
-  .suggestion .actions { display: flex; gap: 8px; }
+  .suggestion .time-badge {
+    display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; align-self: flex-start;
+    font-size: 11.5px; font-weight: 800; letter-spacing: 0.2px; color: #fff;
+    background: linear-gradient(135deg, #10b981, #0ea5a4); border: none;
+    padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+    box-shadow: 0 6px 14px -5px rgba(16, 185, 129, 0.5);
+  }
+  .suggestion .actions { display: flex; gap: 8px; margin-top: auto; }
   .suggestion .actions .btn { flex: 1; padding: 9px 10px; font-size: 13px; }
+  .suggestion .btn-chat { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .suggestion .btn-chat svg { width: 15px; height: 15px; flex-shrink: 0; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 6px; animation: fadeUp 0.4s var(--ease); }
   .chip {
@@ -183,8 +205,8 @@
   .btn:disabled { opacity: .5; cursor: default; transform: none !important; box-shadow: none; }
   .btn-ghost { background: #fff; color: var(--ink-2); border: 1px solid var(--line-2); }
   .btn-ghost:hover { background: var(--bg); border-color: var(--faint); }
-  .btn-go { background: linear-gradient(140deg, var(--brand), var(--brand-2)); color: #fff; box-shadow: 0 8px 18px -10px var(--brand-ring); }
-  .btn-go:hover { transform: translateY(-1px); }
+  .btn-go { background: var(--brand-soft); color: var(--brand); box-shadow: none; font-weight: 600; border: 1px solid #e4dfff; }
+  .btn-go:hover { transform: translateY(-1px); background: #e4dfff; }
 
   /* inline builder in chat */
   .builder { display: flex; flex-direction: column; gap: 11px; }
@@ -198,111 +220,32 @@
   @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
   .builder .pct { font-size: 12px; color: var(--muted); font-weight: 700; text-align: right; margin-top: -4px; }
 
-  /* premium profile intake card */
-  .suggestion.profile-intake {
-    padding: 0; border: 1px solid var(--line); background: #fff;
-    border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm);
-  }
-  .profile-intake .pi-head {
-    display: flex; align-items: center; gap: 14px;
-    padding: 18px 18px; margin: 0;
-    background: linear-gradient(135deg, var(--brand-soft), rgba(251,251,254,0));
-    border-bottom: 1px solid var(--line);
-    color: var(--ink);
-  }
-  .profile-intake .pi-badge {
-    width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
-    display: grid; place-items: center; color: #fff;
-    background: linear-gradient(140deg, var(--brand), var(--brand-2));
-    box-shadow: 0 6px 16px -6px var(--brand-ring);
-  }
-  .profile-intake .pi-badge svg { width: 22px; height: 22px; }
-  .profile-intake .pi-title b { display: block; font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; color: var(--ink); text-transform: capitalize; }
-  .profile-intake .pi-title span { font-size: 12.5px; color: var(--muted); }
-
-  .profile-intake .profile-form {
-    display: flex; flex-direction: column; gap: 18px;
-    padding: 20px 18px 18px; margin: 0;
-    background: #fff; border: none; border-radius: 0; box-shadow: none;
-  }
-  .profile-intake .field { display: flex; flex-direction: column; gap: 9px; }
-  .profile-intake .field > span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; }
-  .profile-intake .input-wrap { position: relative; display: flex; align-items: center; }
-  .profile-intake .input-wrap .fi { position: absolute; left: 13px; width: 17px; height: 17px; color: var(--faint); pointer-events: none; transition: color 0.18s; }
-  .profile-intake .input-wrap input {
-    width: 100%; background: #fafaff; border: 1.5px solid var(--line-2); color: var(--ink);
-    border-radius: 13px; padding: 13px 14px 13px 42px; font-size: 14px; outline: none;
-    font-family: var(--font); transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
-  }
-  .profile-intake .input-wrap input::placeholder { color: var(--faint); }
-  .profile-intake .input-wrap input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-ring); background: #fff; }
-  .profile-intake .input-wrap:focus-within .fi { color: var(--brand); }
-
-  .profile-intake .swatches { display: flex; gap: 12px; justify-content: space-between; }
-  .profile-intake .swatch {
-    flex: 1; max-width: 46px; aspect-ratio: 1 / 1; border-radius: 12px; cursor: pointer; padding: 0;
-    display: grid; place-items: center; border: none;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 4px 10px -4px var(--sw);
-    transition: transform 0.18s var(--ease), box-shadow 0.18s;
-  }
-  .profile-intake .swatch:hover { transform: translateY(-2px) scale(1.05); }
-  .profile-intake .swatch .sw-check { width: 18px; height: 18px; opacity: 0; transform: scale(0.4); transition: opacity 0.15s, transform 0.15s var(--ease); }
-  .profile-intake .swatch.selected { box-shadow: 0 0 0 2.5px #fff, 0 0 0 4.5px var(--sw), 0 7px 16px -5px var(--sw); }
-  .profile-intake .swatch.selected .sw-check { opacity: 1; transform: scale(1); }
-
-  .profile-intake .pi-save {
-    margin-top: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px 18px; font-size: 14.5px; font-weight: 700; border-radius: 13px;
-    box-shadow: 0 12px 26px -10px var(--brand-ring);
-  }
-  .profile-intake .pi-save svg { width: 18px; height: 18px; transition: transform 0.18s var(--ease); }
-  .profile-intake .pi-save:hover svg { transform: translateX(3px); }
-
-  /* dashboard business profile card */
-  .profile-card {
-    background: linear-gradient(140deg, var(--brand-soft), #fff);
-    border: 1px solid #e4dfff; border-radius: 16px; padding: 16px; margin-bottom: 18px;
-    animation: tileIn 0.5s var(--ease);
-  }
-  .profile-card .pc-head { display: flex; align-items: center; gap: 12px; }
-  .profile-card .pc-avatar { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 18px; flex-shrink: 0; }
-  .profile-card .pc-head > div { flex: 1; }
-  .profile-card .pc-head b { display: block; font-size: 15px; font-weight: 700; }
-  .profile-card .pc-head span { font-size: 12px; color: var(--muted); text-transform: capitalize; }
-  .profile-card .pc-color { width: 18px; height: 18px; border-radius: 6px; box-shadow: 0 0 0 1px var(--line-2); }
-  .profile-card .pc-note { margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--brand); background: rgba(91,75,255,0.06); border-radius: 10px; padding: 9px 11px; }
-
-  .suggestion .other-form { display: flex; gap: 8px; }
-  .suggestion .other-input {
-    flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line-2); color: var(--ink);
-    border-radius: 11px; padding: 10px 13px; font-size: 13px; outline: none;
-    font-family: var(--font); transition: border-color 0.18s, box-shadow 0.18s;
-  }
-  .suggestion .other-input::placeholder { color: var(--faint); }
-  .suggestion .other-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-ring); background: #fff; }
-  .suggestion .other-form .btn { padding: 10px 15px; font-size: 13px; white-space: nowrap; }
-
-  .suggestion.saved-state { border-color: #f0e2b8; background: linear-gradient(180deg, #fffdf4, #fff); }
-  .suggestion .saved-row { display: flex; align-items: center; gap: 10px; }
-  .suggestion .saved-tag { flex: 1; font-size: 13px; font-weight: 700; color: #b7891a; }
-  .suggestion .saved-row .btn { padding: 9px 14px; font-size: 13px; }
-
   .suggestion.done-state { border-color: #c9efdd; background: linear-gradient(180deg, #f5fdf9, #fff); }
   .suggestion .done-row { display: flex; align-items: center; gap: 11px; }
   .suggestion .done-row .txt { flex: 1; min-width: 0; }
-  .suggestion .open-lovable { padding: 9px 14px; font-size: 12.5px; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; }
-  .build-tile a.open { text-decoration: none; display: inline-flex; align-items: center; }
   .suggestion .check { width: 40px; height: 40px; border-radius: 11px; background: var(--good-soft); color: var(--good); display: grid; place-items: center; font-size: 20px; flex-shrink: 0; animation: pop 0.4s var(--ease); }
   @keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
   .suggestion .done-row .txt b { display: block; font-size: 14px; }
   .suggestion .done-row .txt span { font-size: 12px; color: var(--muted); }
 
-  /* ---------- Dashboard ---------- */
-  .dashboard { padding: 28px; display: flex; flex-direction: column; height: calc(100vh - 140px); max-height: 900px; overflow-y: auto; }
-  .dash-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
-  .dash-head h2 { margin: 0 0 5px; font-size: 23px; font-weight: 800; letter-spacing: -0.5px; }
-  .dash-head p { margin: 0; color: var(--muted); font-size: 14px; }
-  .dash-head .count { font-size: 12px; font-weight: 700; color: var(--brand); padding: 7px 13px; border-radius: 999px; white-space: nowrap; background: var(--brand-soft); border: 1px solid #e4dfff; }
+  /* ---------- Ideas (middle column) ---------- */
+  .ideas { padding: 24px; display: flex; flex-direction: column; height: calc(100vh - 140px); max-height: 900px; overflow-y: auto; opacity: 0.5; transition: opacity 0.6s var(--ease); }
+  .ideas.active { opacity: 1; }
+  .ideas-head { margin-bottom: 18px; }
+  .ideas-head h2 { margin: 0 0 5px; font-size: 21px; font-weight: 800; letter-spacing: -0.5px; }
+  .ideas-head p { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .ideas-list { display: flex; flex-direction: column; gap: 20px; }
+  .ideas-list .idea-step { display: flex; flex-direction: column; gap: 10px; animation: fadeUp 0.4s var(--ease); }
+  .ideas-list .step-header {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand);
+  }
+  .ideas-list .step-header::before {
+    content: ''; width: 22px; height: 2px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  }
+  .ideas-list .idea-cards { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; }
+  .ideas-list .idea-cards .suggestion { flex: 0 1 calc(33.333% - 8px); min-width: 0; border-bottom-left-radius: 16px; animation: fadeUp 0.4s var(--ease); }
 
   .empty { flex: 1; display: grid; place-items: center; text-align: center; min-height: 430px; }
   .empty .orb {
@@ -314,21 +257,6 @@
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
   .empty h3 { color: var(--ink); margin: 0 0 6px; font-size: 17px; font-weight: 700; }
   .empty p { margin: 0; font-size: 14px; color: var(--muted); max-width: 280px; }
-
-  .builds { display: flex; flex-direction: column; gap: 12px; }
-  .build-tile {
-    display: flex; align-items: center; gap: 14px; padding: 16px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
-    box-shadow: var(--shadow-sm);
-    animation: tileIn 0.5s var(--ease);
-  }
-  @keyframes tileIn { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .build-tile .icon { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font-size: 23px; background: var(--brand-soft); border: 1px solid #ece8ff; flex-shrink: 0; }
-  .build-tile .meta { flex: 1; }
-  .build-tile .meta b { font-size: 15px; font-weight: 700; display: block; }
-  .build-tile .meta .live { font-size: 12px; color: var(--good); font-weight: 600; display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; }
-  .build-tile .meta .live .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
-  .build-tile .open { padding: 9px 15px; font-size: 13px; }
 
   .confetti { position: fixed; width: 9px; height: 14px; top: -20px; z-index: 50; opacity: 0.95; pointer-events: none; border-radius: 2px; animation: fall linear forwards; }
   @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: 0; } }
@@ -360,22 +288,21 @@
       </form>
     </section>
 
-    <section class="card-surface dashboard">
-      <div class="dash-head">
+    <section class="card-surface ideas">
+      <div class="ideas-head">
         <div>
-          <h2>Your dashboard</h2>
-          <p id="dash-sub">Everything you build will show up here.</p>
-        </div>
-        <span class="count" id="count" style="display:none"></span>
-      </div>
-      <div class="empty" id="empty">
-        <div>
-          <div class="orb">✨</div>
-          <h3>Nothing built yet</h3>
-          <p>Chat with the assistant and accept a suggestion to see it appear here.</p>
+          <h2>Ideas for your business</h2>
+          <p id="ideas-sub">Tailored suggestions will appear here.</p>
         </div>
       </div>
-      <div class="builds" id="builds" style="display:none"></div>
+      <div class="empty ideas-empty" id="ideas-empty">
+        <div>
+          <div class="orb">💡</div>
+          <h3>No ideas yet</h3>
+          <p>Tell the assistant about your business to see tailored ideas here.</p>
+        </div>
+      </div>
+      <div class="ideas-list" id="ideas-list" style="display:none"></div>
     </section>
   </main>
 
@@ -385,10 +312,18 @@
   const input = document.getElementById('input');
   const sendBtn = document.getElementById('send');
   const chipsEl = document.getElementById('chips');
-  const buildsEl = document.getElementById('builds');
-  const emptyEl = document.getElementById('empty');
-  const dashSub = document.getElementById('dash-sub');
-  const countEl = document.getElementById('count');
+  const ideasListEl = document.getElementById('ideas-list');
+  const ideasEmptyEl = document.getElementById('ideas-empty');
+  const ideasSub = document.getElementById('ideas-sub');
+  const ideasPanel = document.querySelector('.ideas');
+
+  function revealIdeasList() {
+    ideasPanel.classList.add('active');
+    ideasEmptyEl.style.display = 'none';
+    ideasListEl.style.display = 'flex';
+    ideasSub.textContent = 'Accept the ones you like — each one builds instantly.';
+  }
+  function scrollIdeasToBottom() { ideasPanel.scrollTop = ideasPanel.scrollHeight; }
 
   const QUICK_REPLIES = ['A bakery 🥐', 'A yoga retreat 🧘', 'A car rental 🚗', 'A pet grooming service 🐩'];
 
@@ -398,10 +333,14 @@
       headline: 'Let your {biz} clients <b>book online</b> — set up a booking system with Builder.',
       buildSteps: ['Creating services & slots…', 'Building the calendar…', 'Enabling online payments…'],
       doneMsg: 'booking system · accepting bookings' },
-    eshop: { icon: '🛒', label: 'eshop', title: 'eshop', tool: 'Horizons',
+    eshop: { icon: '🛒', label: 'eshop', title: 'eshop', tool: 'Horizons', estimateMins: 5,
       headline: 'Sell your {biz} products — <b>open an online shop</b> with Horizons.',
       buildSteps: ['Generating storefront…', 'Adding product catalog…', 'Setting up checkout & payments…'],
       doneMsg: 'eshop · live' },
+    photos: { icon: '📸', label: 'photo upload', title: 'product photos', tool: 'Horizons', estimateMins: 5, actionLabel: 'Upload',
+      headline: 'Bring your {biz} shop to life — <b>upload photos to your eshop</b> with Horizons.',
+      buildSteps: ['Opening your storefront…', 'Uploading product photos…', 'Optimizing images…'],
+      doneMsg: 'product photos · uploaded' },
     website: { icon: '🌐', label: 'business website', title: 'business website', tool: 'Horizons',
       headline: 'Give your {biz} an <b>online presence</b> — build a website with Horizons.',
       buildSteps: ['Designing pages & layout…', 'Writing copy & sections…', 'Optimizing for SEO…'],
@@ -410,7 +349,7 @@
       headline: 'Promote your {biz} — <b>launch a one-page promo site</b> with Horizons.',
       buildSteps: ['Drafting copy & hero…', 'Composing sections…', 'Optimizing for conversion…'],
       doneMsg: 'monosite · published' },
-    menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Builder',
+    menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Builder', estimateMins: 5,
       headline: 'Show off your {biz} — <b>publish a digital menu</b> with Builder.',
       buildSteps: ['Building menu layout…', 'Adding items & prices…', 'Generating a QR code…'],
       doneMsg: 'digital menu · published' },
@@ -429,43 +368,43 @@
   };
 
   // Which products to suggest, matched on keywords in the answer. First match wins.
+  // Each entry in `steps` is one Step; a step can hold several product ideas.
   const PROFILES = [
     { match: ['bakery', 'cafe', 'café', 'coffee', 'restaurant', 'pizza', 'food', 'catering', 'kitchen', 'diner'],
-      picks: ['menu', 'eshop', 'loyalty'] },
+      steps: [['menu', 'eshop', 'photos'], ['loyalty']] },
     { match: ['yoga', 'fitness', 'gym', 'studio', 'retreat', 'spa', 'wellness', 'salon', 'barber', 'massage'],
-      picks: ['booking', 'website', 'loyalty'] },
+      steps: [['booking'], ['website'], ['loyalty']] },
     { match: ['rental', 'car', 'auto', 'taxi', 'tour', 'travel', 'hotel', 'rent'],
-      picks: ['booking', 'website', 'crm'] },
+      steps: [['booking'], ['website'], ['crm']] },
     { match: ['pet', 'grooming', 'vet', 'dog', 'clinic', 'dentist', 'doctor', 'therapy', 'lawyer', 'consult'],
-      picks: ['booking', 'website', 'crm'] },
+      steps: [['booking'], ['website'], ['crm']] },
     { match: ['agency', 'freelance', 'design', 'marketing', 'photography', 'studio', 'portfolio'],
-      picks: ['website', 'crm', 'monosite'] },
+      steps: [['website'], ['crm'], ['monosite']] },
     { match: ['shop', 'store', 'boutique', 'ecommerce', 'online', 'clothing', 'jewelry', 'craft'],
-      picks: ['eshop', 'website', 'loyalty'] }
+      steps: [['eshop'], ['website'], ['loyalty']] }
   ];
-  const DEFAULT_PICKS = ['website', 'crm', 'monosite'];
+  const DEFAULT_STEPS = [['website'], ['crm'], ['monosite']];
 
   // Ready-made storefronts to open instead of generating a build, matched on a keyword + product.
   const PRESET_LINKS = [
     { match: 'bakery', productId: 'eshop', url: 'https://hostinger.store/bakery24' }
   ];
 
+  // Returns an array of steps; each step is an array of suggestion objects.
   function getSuggestions(businessNoun) {
     const lower = businessNoun.toLowerCase();
     const profile = PROFILES.find((profile) => profile.match.some((keyword) => lower.includes(keyword)));
-    const picks = profile ? profile.picks : DEFAULT_PICKS;
-    return picks.map((productId) => {
+    const steps = profile ? profile.steps : DEFAULT_STEPS;
+    return steps.map((group) => group.map((productId) => {
       const product = PRODUCTS[productId];
       const suggestion = { ...product, headline: product.headline.replace('{biz}', businessNoun) };
       const presetLink = PRESET_LINKS.find((link) => link.productId === productId && lower.includes(link.match));
       if (presetLink) suggestion.url = presetLink.url;
       return suggestion;
-    });
+    }));
   }
 
-  let builtCount = 0;
-  let businessProfile = null;
-  const BRAND_COLORS = ['#5b4bff', '#e8590c', '#2f9e44', '#1971c2', '#e64980', '#111827'];
+  let businessType = null;
 
   function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
   function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
@@ -496,6 +435,16 @@
     addMessage(text, 'bot');
   }
 
+  function addChatSpinner(text) {
+    const row = document.createElement('div');
+    row.className = 'row bot';
+    row.innerHTML = '<div class="avatar">✦</div><div class="bubble spinner-bubble"><span class="chat-spin"></span></div>';
+    row.querySelector('.bubble').appendChild(document.createTextNode(text));
+    messagesEl.appendChild(row);
+    scrollToBottom();
+    return row;
+  }
+
   let answered = false;
 
   function showQuickReplies() {
@@ -509,13 +458,57 @@
     chipsEl.style.display = 'flex';
   }
 
+  // Framings to click through during a presentation. Edit / add freely.
+  const HERO_PROMPTS = [
+    { lead: 'What business do you ', accent: 'want to build' },
+    { lead: 'What problem are you ', accent: 'trying to solve' },
+    { lead: 'What do you want to ', accent: 'sell online' },
+    { lead: 'What idea are you ', accent: 'ready to launch' }
+  ];
+
   function addHeroGreeting() {
     const hero = document.createElement('div');
     hero.className = 'hero-greeting';
+    hero.setAttribute('title', 'Click to see another framing');
+    const dotsMarkup = HERO_PROMPTS
+      .map((prompt, index) => `<button type="button" class="hero-dot${index === 0 ? ' active' : ''}" data-index="${index}" aria-label="${prompt.lead}${prompt.accent}"></button>`)
+      .join('');
     hero.innerHTML = `
       <div class="eyebrow">👋 Welcome to BusinessBuilder</div>
-      <h2>What business do you <span class="accent">want to build</span>?</h2>
+      <h2></h2>
+      <div class="hero-dots">${dotsMarkup}</div>
     `;
+
+    const heading = hero.querySelector('h2');
+    const dots = Array.from(hero.querySelectorAll('.hero-dot'));
+    let promptIndex = 0;
+
+    const renderMarkup = (prompt) => `${prompt.lead}<span class="accent">${prompt.accent}</span>?`;
+    heading.innerHTML = renderMarkup(HERO_PROMPTS[0]);
+
+    const showPrompt = (nextIndex) => {
+      if (nextIndex === promptIndex) return;
+      promptIndex = nextIndex;
+      dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === promptIndex));
+      heading.classList.add('swapping');
+      setTimeout(() => {
+        heading.innerHTML = renderMarkup(HERO_PROMPTS[promptIndex]);
+        heading.classList.remove('swapping');
+      }, 350);
+    };
+
+    hero.addEventListener('click', () => {
+      if (answered) return;
+      showPrompt((promptIndex + 1) % HERO_PROMPTS.length);
+    });
+    dots.forEach((dot) => {
+      dot.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (answered) return;
+        showPrompt(Number(dot.dataset.index));
+      });
+    });
+
     messagesEl.appendChild(hero);
     scrollToBottom();
   }
@@ -538,121 +531,19 @@
 
     const clean = text.replace(/\s*[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*$/u, '').trim();
     const businessNoun = clean.replace(/^(a|an|the)\s+/i, '').trim().toLowerCase();
+    businessType = businessNoun;
     await botSay(`Love it — a ${businessNoun} business. 🎯`, 1000);
-    await botSay('First, a few quick details. I’ll reuse these across everything you build — one profile, every site & campaign.', 1150);
-    addProfileForm(businessNoun);
-  }
-
-  function addProfileForm(businessNoun) {
-    const row = document.createElement('div');
-    row.className = 'row bot full';
-    const swatches = BRAND_COLORS.map((color, index) =>
-      `<button type="button" class="swatch${index === 0 ? ' selected' : ''}" data-color="${color}" style="--sw:${color};background:${color}" aria-label="brand color">
-         <svg class="sw-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
-       </button>`
-    ).join('');
-    row.innerHTML = `
-      <div class="avatar">✦</div>
-      <div class="suggestion profile-intake">
-        <div class="pi-head">
-          <div class="pi-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M13.5 9.5H18M13.5 13H18M5.5 16.2c.7-1.3 1.9-1.9 3-1.9s2.3.6 3 1.9"/></svg>
-          </div>
-          <div class="pi-title">
-            <b>Set up your ${businessNoun}</b>
-            <span>Tell me once — I’ll reuse it everywhere ♻️</span>
-          </div>
-        </div>
-        <form class="profile-form">
-          <label class="field">
-            <span>Business name</span>
-            <div class="input-wrap">
-              <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-4.5A1 1 0 0 1 5.4 4h13.2a1 1 0 0 1 .9.6L21 9"/><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg>
-              <input class="pf-name" type="text" placeholder="e.g. Sunrise ${businessNoun}" autocomplete="off" />
-            </div>
-          </label>
-          <label class="field">
-            <span>Location</span>
-            <div class="input-wrap">
-              <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-              <input class="pf-loc" type="text" placeholder="e.g. Lisbon, Portugal" autocomplete="off" />
-            </div>
-          </label>
-          <div class="field">
-            <span>Brand color</span>
-            <div class="swatches">${swatches}</div>
-          </div>
-          <button type="submit" class="btn btn-go pi-save">
-            <span>Save profile</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg>
-          </button>
-        </form>
-      </div>
-    `;
-    const card = row.querySelector('.suggestion');
-    let selectedColor = BRAND_COLORS[0];
-    card.querySelectorAll('.swatch').forEach((swatch) => {
-      swatch.addEventListener('click', () => {
-        card.querySelectorAll('.swatch').forEach((other) => other.classList.remove('selected'));
-        swatch.classList.add('selected');
-        selectedColor = swatch.dataset.color;
-      });
-    });
-    card.querySelector('.profile-form').addEventListener('submit', (event) => {
-      event.preventDefault();
-      const name = card.querySelector('.pf-name').value.trim() || ('Your ' + businessNoun);
-      const location = card.querySelector('.pf-loc').value.trim() || '—';
-      businessProfile = { type: businessNoun, name, location, color: selectedColor };
-      renderProfileConfirmed(card, businessNoun);
-    });
-    messagesEl.appendChild(row);
-    scrollToBottom();
-  }
-
-  async function renderProfileConfirmed(card, businessNoun) {
-    card.classList.add('done-state');
-    card.innerHTML = `
-      <div class="done-row">
-        <div class="check">✓</div>
-        <div class="txt">
-          <b>Business profile saved</b>
-          <span>Reused across every site & campaign you build</span>
-        </div>
-      </div>
-    `;
-    renderDashboardProfile();
-    scrollToBottom();
-    await botSay(`Perfect — I’ll apply the ${businessProfile.name} profile to everything below. Accept the ones you like:`, 1050);
-    for (const suggestion of getSuggestions(businessNoun)) {
+    const spinner = addChatSpinner('Generating your ideas…');
+    for (const group of getSuggestions(businessNoun)) {
       await sleep(650);
-      addSuggestion(suggestion);
+      revealIdeasList();
+      await addIdeaStep(group.map(buildSuggestionCard));
     }
     await sleep(650);
-    addOtherSuggestion();
-  }
-
-  function renderDashboardProfile() {
-    emptyEl.style.display = 'none';
-    let profileEl = document.getElementById('profile-card');
-    if (!profileEl) {
-      profileEl = document.createElement('div');
-      profileEl.id = 'profile-card';
-      profileEl.className = 'profile-card';
-      dashSub.parentElement.parentElement.after(profileEl);
-    }
-    profileEl.innerHTML = `
-      <div class="pc-head">
-        <span class="pc-avatar" style="background:${businessProfile.color}">${businessProfile.name.charAt(0).toUpperCase()}</span>
-        <div>
-          <b>${businessProfile.name}</b>
-          <span>${businessProfile.type} · ${businessProfile.location}</span>
-        </div>
-        <span class="pc-color" style="background:${businessProfile.color}" title="Brand color"></span>
-      </div>
-      <div class="pc-note">♻️ This profile is reused across every site & campaign you build.</div>
-    `;
-    dashSub.textContent = 'Your business profile + everything you build.';
-    buildsEl.style.display = 'flex';
+    const reachSuggestion = { ...PRODUCTS.reach, headline: PRODUCTS.reach.headline.replace('{biz}', businessNoun) };
+    await addIdeaStep([buildSuggestionCard(reachSuggestion)]);
+    spinner.remove();
+    await botSay('Done! Check out the ideas panel and accept the ones you like →', 900);
   }
 
   composer.addEventListener('submit', (event) => {
@@ -660,79 +551,52 @@
     submitAnswer(input.value.trim());
   });
 
-  function addSuggestion(suggestion) {
-    const row = document.createElement('div');
-    row.className = 'row bot full';
-    row.innerHTML = `
-      <div class="avatar">✦</div>
-      <div class="suggestion">
-        <div class="top">
-          <div class="icon">${suggestion.icon}</div>
-          <div class="headline">${suggestion.headline}</div>
-        </div>
-        <div class="actions">
-          <button class="btn btn-ghost btn-save">Save for later</button>
-          <button class="btn btn-go">Build it</button>
-        </div>
-      </div>
-    `;
-    const card = row.querySelector('.suggestion');
-    row.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, suggestion));
-    row.querySelector('.btn-save').addEventListener('click', () => saveForLater(card, suggestion));
-    messagesEl.appendChild(row);
-    scrollToBottom();
+  async function addIdeaStep(cards) {
+    const stepNumber = ideasListEl.children.length + 1;
+    const step = document.createElement('div');
+    step.className = 'idea-step';
+    step.innerHTML = `<div class="step-header">Step ${stepNumber}</div><div class="idea-cards"></div>`;
+    const cardsWrap = step.querySelector('.idea-cards');
+    ideasListEl.appendChild(step);
+    scrollIdeasToBottom();
+    for (let index = 0; index < cards.length; index++) {
+      cardsWrap.appendChild(cards[index]);
+      scrollIdeasToBottom();
+      await sleep(index < 3 ? Math.floor(Math.random() * 900) + 700 : 400);
+    }
   }
 
-  function addOtherSuggestion() {
-    const row = document.createElement('div');
-    row.className = 'row bot full';
-    row.innerHTML = `
-      <div class="avatar">✦</div>
-      <div class="suggestion">
-        <div class="top">
-          <div class="icon">✨</div>
-          <div class="headline">Something else in mind? <b>Tell me exactly what to build.</b></div>
-        </div>
-        <form class="other-form">
-          <input class="other-input" type="text" placeholder="e.g. a table reservation system" autocomplete="off" />
-          <button type="submit" class="btn btn-go">Build it</button>
-        </form>
-      </div>
-    `;
-    const card = row.querySelector('.suggestion');
-    const form = row.querySelector('.other-form');
-    const input = row.querySelector('.other-input');
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const wanted = input.value.trim();
-      if (!wanted) return;
-      const custom = {
-        icon: '✨',
-        label: wanted,
-        title: wanted,
-        tool: 'Builder',
-        buildSteps: ['Understanding your request…', 'Designing the solution…', 'Assembling with Builder…'],
-        doneMsg: wanted + ' · ready to use'
-      };
-      runBuilder(card, custom);
-    });
-    messagesEl.appendChild(row);
-    scrollToBottom();
+  function randomMinutes() {
+    const options = [5, 10, 15, 20];
+    return options[Math.floor(Math.random() * options.length)];
   }
 
-  function saveForLater(card, suggestion) {
-    card.classList.add('saved-state');
-    card.querySelector('.actions').outerHTML = `
-      <div class="saved-row">
-        <span class="saved-tag">⭐ Saved for later</span>
-        <button class="btn btn-go btn-build-now">Build now</button>
+  function buildSuggestionCard(suggestion) {
+    const minutes = suggestion.estimateMins || randomMinutes();
+    const card = document.createElement('div');
+    card.className = 'suggestion';
+    card.innerHTML = `
+      <div class="top">
+        <div class="icon">${suggestion.icon}</div>
+        <div class="headline">${suggestion.headline}</div>
+        <span class="time-badge">⏱ up to ${minutes} min</span>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-chat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>
+          Chat about it
+        </button>
+        <button class="btn btn-go">${suggestion.actionLabel || 'Build it'}</button>
       </div>
     `;
-    card.querySelector('.btn-build-now').addEventListener('click', () => {
-      card.classList.remove('saved-state');
-      runBuilder(card, suggestion);
-    });
-    scrollToBottom();
+    card.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, suggestion));
+    card.querySelector('.btn-chat').addEventListener('click', () => chatAboutIdea(suggestion));
+    return card;
+  }
+
+  async function chatAboutIdea(suggestion) {
+    addMessage(`Tell me more about the ${suggestion.label}.`, 'user');
+    await botSay(`A ${suggestion.title} built with ${suggestion.tool} takes just a few minutes — I’ll ${suggestion.buildSteps.map((step) => step.replace(/…$/, '').toLowerCase()).join(', ')}, all applied to your ${businessType || 'business'}. Hit “Build it” whenever you’re ready and I’ll get started. 🚀`, 1100);
   }
 
   function runBuilder(card, suggestion) {
@@ -747,13 +611,11 @@
         <div class="pct">0%</div>
       </div>
     `;
-    scrollToBottom();
+    scrollIdeasToBottom();
     const bar = card.querySelector('.bar > i');
     const pct = card.querySelector('.pct');
     const stepText = card.querySelector('.step-text');
-    const steps = businessProfile
-      ? [`Applying your ${businessProfile.name} profile…`, ...suggestion.buildSteps]
-      : suggestion.buildSteps;
+    const steps = suggestion.buildSteps;
     let stepIndex = 0;
 
     function nextStep() {
@@ -778,12 +640,8 @@
   }
 
   function buildLovableUrl(suggestion) {
-    const profile = businessProfile || {};
-    const name = profile.name || 'my business';
-    const type = profile.type || 'business';
-    const location = profile.location && profile.location !== '—' ? ` based in ${profile.location}` : '';
-    const color = profile.color ? ` Use ${profile.color} as the primary brand color.` : '';
-    const prompt = `Create a ${suggestion.title} for ${name}, a ${type}${location}.${color} Make it clean, modern and production-ready.`;
+    const type = businessType || 'business';
+    const prompt = `Create a ${suggestion.title} for a ${type}. Make it clean, modern and production-ready.`;
     return 'https://lovable.dev/?autosubmit=true#prompt=' + encodeURIComponent(prompt);
   }
 
@@ -800,35 +658,9 @@
       </div>
     `;
     fireConfetti(card);
-    addToDashboard(suggestion, targetUrl);
     // Best-effort auto-open; may be blocked by the popup blocker (not a direct click).
     window.open(targetUrl, '_blank', 'noopener');
-    scrollToBottom();
-  }
-
-  function addToDashboard(suggestion, targetUrl) {
-    emptyEl.style.display = 'none';
-    buildsEl.style.display = 'flex';
-    builtCount++;
-    countEl.textContent = builtCount + (builtCount === 1 ? ' app' : ' apps');
-    countEl.style.display = 'inline-block';
-    dashSub.textContent = businessProfile ? 'Your business profile + live products.' : 'Your live products.';
-
-    const tile = document.createElement('div');
-    tile.className = 'build-tile';
-    tile.innerHTML = `
-      <div class="icon">${suggestion.icon}</div>
-      <div class="meta">
-        <b>${suggestion.title.charAt(0).toUpperCase() + suggestion.title.slice(1)}</b>
-        <span class="live"><span class="dot"></span> ${suggestion.doneMsg.split('·')[1].trim()}</span>
-      </div>
-      <a class="btn btn-primary open" href="${targetUrl}" target="_blank" rel="noopener">Open ↗</a>
-    `;
-    tile.querySelector('.open').addEventListener('click', () => {
-      const destination = suggestion.url ? 'your store' : 'Lovable';
-      addMessage('🎉 Opening your ' + suggestion.label + ' in ' + destination + '…', 'bot');
-    });
-    buildsEl.appendChild(tile);
+    scrollIdeasToBottom();
   }
 
   function fireConfetti(anchor) {
