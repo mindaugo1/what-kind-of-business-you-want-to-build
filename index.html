@@ -251,8 +251,21 @@
   .suggestion .done-row .txt span { font-size: 12px; color: var(--muted); }
 
   /* ---------- Ideas (middle column) ---------- */
-  .ideas { padding: 24px; display: flex; flex-direction: column; height: calc(100vh - 140px); max-height: 900px; overflow-y: auto; opacity: 0.5; transition: opacity 0.6s var(--ease); }
+  .ideas { padding: 0; display: flex; flex-direction: column; height: calc(100vh - 140px); max-height: 900px; overflow: hidden; opacity: 0.5; transition: opacity 0.6s var(--ease); }
   .ideas.active { opacity: 1; }
+  .ideas-tabs { display: flex; gap: 4px; padding: 14px 18px 0; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+  .ideas-tab { border: none; background: transparent; font-family: var(--font); font-size: 13.5px; font-weight: 700; color: var(--muted); cursor: pointer; padding: 10px 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+  .ideas-tab:hover { color: var(--ink); }
+  .ideas-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+  .ideas-pane { flex: 1; overflow-y: auto; padding: 24px; }
+  .ideas-pane[hidden] { display: none; }
+  .about-body { display: flex; flex-direction: column; gap: 15px; }
+  .about-field .about-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 6px; }
+  .about-field .about-value { font-size: 14.5px; color: var(--ink); font-weight: 600; }
+  .about-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .about-chip { font-size: 12.5px; font-weight: 600; color: var(--ink-2); background: var(--bg); border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 11px; }
+  .about-chip.best { color: var(--good); background: var(--good-soft); border-color: #c9efdd; }
+  .about-chip.worst { color: #b7891a; background: #fffdf4; border-color: #f0e2b8; }
   .ideas-head { margin-bottom: 18px; }
   .ideas-head h2 { margin: 0 0 5px; font-size: 21px; font-weight: 800; letter-spacing: -0.5px; }
   .ideas-head p { margin: 0; color: var(--muted); font-size: 13.5px; }
@@ -312,20 +325,45 @@
     </section>
 
     <section class="card-surface ideas">
-      <div class="ideas-head">
-        <div>
-          <h2>Ideas for your business</h2>
-          <p id="ideas-sub">Tailored suggestions will appear here.</p>
+      <div class="ideas-tabs">
+        <button type="button" class="ideas-tab active" data-tab="ideas">Ideas</button>
+        <button type="button" class="ideas-tab" data-tab="about">What we know</button>
+      </div>
+
+      <div class="ideas-pane" id="pane-ideas">
+        <div class="ideas-head">
+          <div>
+            <h2>Ideas for your business</h2>
+            <p id="ideas-sub">Tailored suggestions will appear here.</p>
+          </div>
+        </div>
+        <div class="empty ideas-empty" id="ideas-empty">
+          <div>
+            <div class="orb">💡</div>
+            <h3>No ideas yet</h3>
+            <p>Tell the assistant about your business to see tailored ideas here.</p>
+          </div>
+        </div>
+        <div class="ideas-list" id="ideas-list" style="display:none"></div>
+      </div>
+
+      <div class="ideas-pane" id="pane-about" hidden>
+        <div class="ideas-head">
+          <div>
+            <h2>What we know about you</h2>
+            <p>We pulled this together so every idea actually fits.</p>
+          </div>
+        </div>
+        <div class="about-body" id="about-body">
+          <div class="empty">
+            <div>
+              <div class="orb">🔎</div>
+              <h3>Nothing yet</h3>
+              <p>Tell the assistant about your business first.</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="empty ideas-empty" id="ideas-empty">
-        <div>
-          <div class="orb">💡</div>
-          <h3>No ideas yet</h3>
-          <p>Tell the assistant about your business to see tailored ideas here.</p>
-        </div>
-      </div>
-      <div class="ideas-list" id="ideas-list" style="display:none"></div>
     </section>
   </main>
 
@@ -339,6 +377,17 @@
   const ideasEmptyEl = document.getElementById('ideas-empty');
   const ideasSub = document.getElementById('ideas-sub');
   const ideasPanel = document.querySelector('.ideas');
+  const ideasPaneEl = document.getElementById('pane-ideas');
+  const aboutPaneEl = document.getElementById('pane-about');
+  const aboutBody = document.getElementById('about-body');
+
+  document.querySelectorAll('.ideas-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ideas-tab').forEach((other) => other.classList.toggle('active', other === tab));
+      ideasPaneEl.hidden = tab.dataset.tab !== 'ideas';
+      aboutPaneEl.hidden = tab.dataset.tab !== 'about';
+    });
+  });
 
   function revealIdeasList() {
     ideasPanel.classList.add('active');
@@ -346,7 +395,44 @@
     ideasListEl.style.display = 'flex';
     ideasSub.textContent = 'Accept the ones you like — each one builds instantly.';
   }
-  function scrollIdeasToBottom() { ideasPanel.scrollTop = ideasPanel.scrollHeight; }
+  function scrollIdeasToBottom() { ideasPaneEl.scrollTop = ideasPaneEl.scrollHeight; }
+
+  // Mock business intelligence to show we "know" the business.
+  function buildBusinessIntel(businessNoun) {
+    const lower = businessNoun.toLowerCase();
+    if (/bakery|cafe|café|coffee|pastry|bread|patiss/.test(lower)) {
+      return {
+        name: 'Sunrise Bakery',
+        address: '12 Baker Street, Lisbon',
+        products: ['Sourdough loaf', 'Butter croissant', 'Cinnamon roll', 'Rye bread', 'Blueberry muffin'],
+        bestSeller: 'Cinnamon roll',
+        worstSellers: ['Rye bread', 'Plain bagel'],
+        competitors: ['Central Perk Café', 'Doughlicious', 'The Corner Bakehouse']
+      };
+    }
+    const titled = businessNoun.charAt(0).toUpperCase() + businessNoun.slice(1);
+    return {
+      name: `${titled} Co.`,
+      address: '25 Market Square, Lisbon',
+      products: ['Starter package', 'Standard package', 'Premium package', 'Add-on extras'],
+      bestSeller: 'Premium package',
+      worstSellers: ['Add-on extras'],
+      competitors: [`${titled} Hub`, `Prime ${titled}`, `${titled} Express`]
+    };
+  }
+
+  function renderAbout(businessNoun) {
+    const intel = buildBusinessIntel(businessNoun);
+    const chips = (items, className) => items.map((item) => `<span class="about-chip${className ? ' ' + className : ''}">${item}</span>`).join('');
+    aboutBody.innerHTML = `
+      <div class="about-field"><div class="about-label">Business</div><div class="about-value">${intel.name}</div></div>
+      <div class="about-field"><div class="about-label">Address</div><div class="about-value">${intel.address}</div></div>
+      <div class="about-field"><div class="about-label">Products</div><div class="about-chips">${chips(intel.products)}</div></div>
+      <div class="about-field"><div class="about-label">Best seller</div><div class="about-chips">${chips([intel.bestSeller], 'best')}</div></div>
+      <div class="about-field"><div class="about-label">Slow movers</div><div class="about-chips">${chips(intel.worstSellers, 'worst')}</div></div>
+      <div class="about-field"><div class="about-label">Competitors</div><div class="about-chips">${chips(intel.competitors)}</div></div>
+    `;
+  }
 
   const QUICK_REPLIES = ['A bakery 🥐'];
 
@@ -567,6 +653,7 @@
     const clean = text.replace(/\s*[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*$/u, '').trim();
     const businessNoun = clean.replace(/^(a|an|the)\s+/i, '').trim().toLowerCase();
     businessType = businessNoun;
+    renderAbout(businessNoun);
     await botSay(`Love it — a ${businessNoun} business. 🎯`, 1000);
     const spinner = addChatSpinner('Generating your ideas…');
     const groups = getSuggestions(businessNoun);
