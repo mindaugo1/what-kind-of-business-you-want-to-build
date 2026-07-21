@@ -180,6 +180,11 @@
   .suggestion .actions .btn { flex: 1; padding: 9px 10px; font-size: 13px; }
   .suggestion .btn-chat { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
   .suggestion .btn-chat svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .suggestion .tool-toggle { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .suggestion .tool-info { font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .suggestion .tool-seg { display: inline-flex; background: var(--bg); border: 1px solid var(--line-2); border-radius: 999px; padding: 3px; gap: 2px; }
+  .suggestion .tool-opt { border: none; background: transparent; font-family: var(--font); font-size: 12px; font-weight: 600; color: var(--muted); padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: color 0.18s, background 0.18s, box-shadow 0.18s; }
+  .suggestion .tool-opt.active { background: #fff; color: var(--brand); box-shadow: var(--shadow-sm); }
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 6px; animation: fadeUp 0.4s var(--ease); }
   .chip {
@@ -329,36 +334,36 @@
 
   // Catalog of products the assistant can build. {biz} is replaced with the user's business.
   const PRODUCTS = {
-    booking: { icon: '📅', label: 'booking system', title: 'booking system', tool: 'Builder',
-      headline: 'Let your {biz} clients <b>book online</b> — set up a booking system with Builder.',
+    booking: { icon: '📅', label: 'booking system', title: 'booking system', tool: 'Drag & Drop',
+      headline: 'Let your {biz} clients <b>book online</b> — set up a booking system with Drag & Drop.',
       buildSteps: ['Creating services & slots…', 'Building the calendar…', 'Enabling online payments…'],
       doneMsg: 'booking system · accepting bookings' },
-    eshop: { icon: '🛒', label: 'eshop', title: 'eshop', tool: 'Horizons', estimateMins: 5,
-      headline: 'Sell your {biz} products — <b>open an online shop</b> with Horizons.',
+    eshop: { icon: '🛒', label: 'eshop', title: 'eshop', tool: 'Full AI', estimateMins: 5,
+      headline: 'Sell your {biz} products — <b>open an online shop</b> with Full AI.',
       buildSteps: ['Generating storefront…', 'Adding product catalog…', 'Setting up checkout & payments…'],
       doneMsg: 'eshop · live' },
-    photos: { icon: '📸', label: 'photo upload', title: 'product photos', tool: 'Horizons', estimateMins: 5, actionLabel: 'Upload',
-      headline: 'Bring your {biz} shop to life — <b>upload photos to your eshop</b> with Horizons.',
+    photos: { icon: '📸', label: 'photo upload', title: 'product photos', tool: 'Full AI', estimateMins: 5, actionLabel: 'Upload',
+      headline: 'Bring your {biz} shop to life — <b>upload photos to your eshop</b> with Full AI.',
       buildSteps: ['Opening your storefront…', 'Uploading product photos…', 'Optimizing images…'],
       doneMsg: 'product photos · uploaded' },
-    website: { icon: '🌐', label: 'business website', title: 'business website', tool: 'Horizons',
-      headline: 'Give your {biz} an <b>online presence</b> — build a website with Horizons.',
+    website: { icon: '🌐', label: 'business website', title: 'business website', tool: 'Full AI',
+      headline: 'Give your {biz} an <b>online presence</b> — build a website with Full AI.',
       buildSteps: ['Designing pages & layout…', 'Writing copy & sections…', 'Optimizing for SEO…'],
       doneMsg: 'website · published' },
-    monosite: { icon: '🚀', label: 'promo monosite', title: 'promo monosite', tool: 'Horizons',
-      headline: 'Promote your {biz} — <b>launch a one-page promo site</b> with Horizons.',
+    monosite: { icon: '🚀', label: 'promo monosite', title: 'promo monosite', tool: 'Full AI',
+      headline: 'Promote your {biz} — <b>launch a one-page promo site</b> with Full AI.',
       buildSteps: ['Drafting copy & hero…', 'Composing sections…', 'Optimizing for conversion…'],
       doneMsg: 'monosite · published' },
-    menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Builder', estimateMins: 5,
-      headline: 'Show off your {biz} — <b>publish a digital menu</b> with Builder.',
+    menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Drag & Drop', tools: ['Drag & Drop', 'Full AI'], estimateMins: 5,
+      headline: 'Show off your {biz} — <b>publish a digital menu</b>.',
       buildSteps: ['Building menu layout…', 'Adding items & prices…', 'Generating a QR code…'],
       doneMsg: 'digital menu · published' },
-    crm: { icon: '📇', label: 'CRM', title: 'CRM', tool: 'Builder',
-      headline: 'Manage your {biz} customers — <b>organize every lead</b> with Builder.',
+    crm: { icon: '📇', label: 'CRM', title: 'CRM', tool: 'Drag & Drop',
+      headline: 'Manage your {biz} customers — <b>organize every lead</b> with Drag & Drop.',
       buildSteps: ['Scaffolding data models…', 'Designing pipeline & views…', 'Wiring up automations…'],
       doneMsg: 'CRM · ready to use' },
-    loyalty: { icon: '🎟️', label: 'loyalty program', title: 'loyalty program', tool: 'Builder',
-      headline: 'Keep {biz} customers coming back — <b>launch a loyalty program</b> with Builder.',
+    loyalty: { icon: '🎟️', label: 'loyalty program', title: 'loyalty program', tool: 'Drag & Drop',
+      headline: 'Keep {biz} customers coming back — <b>launch a loyalty program</b> with Drag & Drop.',
       buildSteps: ['Defining rewards & tiers…', 'Setting up points engine…', 'Adding digital punch cards…'],
       doneMsg: 'loyalty program · active' },
     reach: { icon: '📣', label: 'Reach campaign', title: 'email campaign', tool: 'Reach',
@@ -571,8 +576,23 @@
     return options[Math.floor(Math.random() * options.length)];
   }
 
+  const TOOL_INFO = {
+    'Drag & Drop': 'Design it yourself — drag blocks into place and style it visually, no code needed.',
+    'Full AI': 'Just describe what you want and AI builds the whole thing for you in one go.'
+  };
+
   function buildSuggestionCard(suggestion) {
     const minutes = suggestion.estimateMins || randomMinutes();
+    const tools = suggestion.tools || [suggestion.tool];
+    let selectedTool = tools[0];
+    const toolToggle = tools.length > 1
+      ? `<div class="tool-toggle">
+          <div class="tool-seg">
+            ${tools.map((toolName, index) => `<button type="button" class="tool-opt${index === 0 ? ' active' : ''}" data-tool="${toolName}">${toolName}</button>`).join('')}
+          </div>
+          <div class="tool-info">${TOOL_INFO[selectedTool] || ''}</div>
+        </div>`
+      : '';
     const card = document.createElement('div');
     card.className = 'suggestion';
     card.innerHTML = `
@@ -581,6 +601,7 @@
         <div class="headline">${suggestion.headline}</div>
         <span class="time-badge">⏱ up to ${minutes} min</span>
       </div>
+      ${toolToggle}
       <div class="actions">
         <button class="btn btn-ghost btn-chat">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6a4 4 0 0 0 2.5 2.5L22 12l-5.6 1.9a4 4 0 0 0-2.5 2.5L12 22l-1.9-5.6a4 4 0 0 0-2.5-2.5L2 12l5.6-1.9a4 4 0 0 0 2.5-2.5L12 2z"/></svg>
@@ -589,8 +610,17 @@
         <button class="btn btn-go">${suggestion.actionLabel || 'Build it'}</button>
       </div>
     `;
-    card.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, suggestion));
-    card.querySelector('.btn-chat').addEventListener('click', () => chatAboutIdea(suggestion));
+    card.querySelectorAll('.tool-opt').forEach((option) => {
+      option.addEventListener('click', () => {
+        card.querySelectorAll('.tool-opt').forEach((other) => other.classList.remove('active'));
+        option.classList.add('active');
+        selectedTool = option.dataset.tool;
+        const info = card.querySelector('.tool-info');
+        if (info) info.textContent = TOOL_INFO[selectedTool] || '';
+      });
+    });
+    card.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, { ...suggestion, tool: selectedTool }));
+    card.querySelector('.btn-chat').addEventListener('click', () => chatAboutIdea({ ...suggestion, tool: selectedTool }));
     return card;
   }
 
