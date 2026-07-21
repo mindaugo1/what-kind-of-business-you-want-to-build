@@ -158,6 +158,14 @@
   @keyframes blink { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-2px); } }
   .bubble.spinner-bubble { display: inline-flex; align-items: center; gap: 9px; }
   .bubble .chat-spin { width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--line-2); border-top-color: var(--brand); animation: spin 0.7s linear infinite; }
+  .bubble .plan-head { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; margin-bottom: 4px; }
+  .bubble .plan-why { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; }
+  .bubble .plan-step { margin-bottom: 11px; }
+  .bubble .plan-step:last-child { margin-bottom: 0; }
+  .bubble .plan-badge { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: var(--brand); margin-bottom: 4px; }
+  .bubble .plan-step ul { margin: 0; padding-left: 18px; }
+  .bubble .plan-step li { font-size: 13px; line-height: 1.5; margin: 3px 0; color: var(--muted); }
+  .bubble .plan-step li b { color: var(--ink); font-weight: 700; }
 
   /* suggestion card inside chat */
   .suggestion {
@@ -180,8 +188,7 @@
   .suggestion .actions .btn { flex: 1; padding: 9px 10px; font-size: 13px; }
   .suggestion .btn-chat { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
   .suggestion .btn-chat svg { width: 15px; height: 15px; flex-shrink: 0; }
-  .suggestion .tool-toggle { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .suggestion .tool-info { font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .suggestion .tool-toggle { display: flex; }
   .suggestion .tool-seg { display: inline-flex; background: var(--bg); border: 1px solid var(--line-2); border-radius: 999px; padding: 3px; gap: 2px; }
   .suggestion .tool-opt { border: none; background: transparent; font-family: var(--font); font-size: 12px; font-weight: 600; color: var(--muted); padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: color 0.18s, background 0.18s, box-shadow 0.18s; }
   .suggestion .tool-opt.active { background: #fff; color: var(--brand); box-shadow: var(--shadow-sm); }
@@ -337,39 +344,39 @@
     booking: { icon: '📅', label: 'booking system', title: 'booking system', tool: 'Drag & Drop',
       headline: 'Let your {biz} clients <b>book online</b> — set up a booking system with Drag & Drop.',
       buildSteps: ['Creating services & slots…', 'Building the calendar…', 'Enabling online payments…'],
-      doneMsg: 'booking system · accepting bookings' },
+      doneMsg: 'booking system · accepting bookings', why: 'clients can reserve in seconds' },
     eshop: { icon: '🛒', label: 'eshop', title: 'eshop', tool: 'Full AI', estimateMins: 5,
       headline: 'Sell your {biz} products — <b>open an online shop</b> with Full AI.',
       buildSteps: ['Generating storefront…', 'Adding product catalog…', 'Setting up checkout & payments…'],
-      doneMsg: 'eshop · live' },
+      doneMsg: 'eshop · live', why: 'you can take orders and payments online' },
     photos: { icon: '📸', label: 'photo upload', title: 'product photos', tool: 'Full AI', estimateMins: 5, actionLabel: 'Upload',
       headline: 'Bring your {biz} shop to life — <b>upload photos to your eshop</b> with Full AI.',
       buildSteps: ['Opening your storefront…', 'Uploading product photos…', 'Optimizing images…'],
-      doneMsg: 'product photos · uploaded' },
+      doneMsg: 'product photos · uploaded', why: 'great visuals turn browsers into buyers' },
     website: { icon: '🌐', label: 'business website', title: 'business website', tool: 'Full AI',
       headline: 'Give your {biz} an <b>online presence</b> — build a website with Full AI.',
       buildSteps: ['Designing pages & layout…', 'Writing copy & sections…', 'Optimizing for SEO…'],
-      doneMsg: 'website · published' },
+      doneMsg: 'website · published', why: 'people can find and trust you' },
     monosite: { icon: '🚀', label: 'promo monosite', title: 'promo monosite', tool: 'Full AI',
       headline: 'Promote your {biz} — <b>launch a one-page promo site</b> with Full AI.',
       buildSteps: ['Drafting copy & hero…', 'Composing sections…', 'Optimizing for conversion…'],
-      doneMsg: 'monosite · published' },
+      doneMsg: 'monosite · published', why: 'you can promote one offer with full focus' },
     menu: { icon: '🍽️', label: 'digital menu', title: 'digital menu', tool: 'Drag & Drop', tools: ['Drag & Drop', 'Full AI'], estimateMins: 5,
       headline: 'Show off your {biz} — <b>publish a digital menu</b>.',
       buildSteps: ['Building menu layout…', 'Adding items & prices…', 'Generating a QR code…'],
-      doneMsg: 'digital menu · published' },
+      doneMsg: 'digital menu · published', why: 'customers see everything you offer at a glance' },
     crm: { icon: '📇', label: 'CRM', title: 'CRM', tool: 'Drag & Drop',
       headline: 'Manage your {biz} customers — <b>organize every lead</b> with Drag & Drop.',
       buildSteps: ['Scaffolding data models…', 'Designing pipeline & views…', 'Wiring up automations…'],
-      doneMsg: 'CRM · ready to use' },
+      doneMsg: 'CRM · ready to use', why: 'every lead and customer stays organized' },
     loyalty: { icon: '🎟️', label: 'loyalty program', title: 'loyalty program', tool: 'Drag & Drop',
       headline: 'Keep {biz} customers coming back — <b>launch a loyalty program</b> with Drag & Drop.',
       buildSteps: ['Defining rewards & tiers…', 'Setting up points engine…', 'Adding digital punch cards…'],
-      doneMsg: 'loyalty program · active' },
+      doneMsg: 'loyalty program · active', why: 'first-time buyers become regulars' },
     reach: { icon: '📣', label: 'Reach campaign', title: 'email campaign', tool: 'Reach',
       headline: 'Grow your {biz} — <b>run an email campaign</b> with Reach.',
       buildSteps: ['Building audience segments…', 'Writing email sequence…', 'Scheduling with Reach…'],
-      doneMsg: 'Reach campaign · scheduled' }
+      doneMsg: 'Reach campaign · scheduled', why: 'you can win customers back by email' }
   };
 
   // Which products to suggest, matched on keywords in the answer. First match wins.
@@ -438,6 +445,17 @@
     await sleep(delay);
     typing.remove();
     addMessage(text, 'bot');
+  }
+
+  async function botSayHtml(html, delay = 950) {
+    const typing = addTyping();
+    await sleep(delay);
+    typing.remove();
+    const row = document.createElement('div');
+    row.className = 'row bot';
+    row.innerHTML = `<div class="avatar">✦</div><div class="bubble">${html}</div>`;
+    messagesEl.appendChild(row);
+    scrollToBottom();
   }
 
   function addChatSpinner(text) {
@@ -539,7 +557,8 @@
     businessType = businessNoun;
     await botSay(`Love it — a ${businessNoun} business. 🎯`, 1000);
     const spinner = addChatSpinner('Generating your ideas…');
-    for (const group of getSuggestions(businessNoun)) {
+    const groups = getSuggestions(businessNoun);
+    for (const group of groups) {
       await sleep(650);
       revealIdeasList();
       await addIdeaStep(group.map(buildSuggestionCard));
@@ -548,7 +567,25 @@
     const reachSuggestion = { ...PRODUCTS.reach, headline: PRODUCTS.reach.headline.replace('{biz}', businessNoun) };
     await addIdeaStep([buildSuggestionCard(reachSuggestion)]);
     spinner.remove();
-    await botSay('Done! Check out the ideas panel and accept the ones you like →', 900);
+
+    // Ideas are ready — pull focus back to the chat and lay out the plan.
+    ideasPanel.classList.remove('active');
+    // Re-brighten the ideas panel after a beat so attention returns to it.
+    setTimeout(() => ideasPanel.classList.add('active'), 7000);
+    const planSteps = groups.concat([[reachSuggestion]]);
+    await botSay(`All set — here's the plan I put together for your ${businessNoun}. 👇`, 900);
+    await botSayHtml(buildPlanHtml(businessNoun, planSteps), 1400);
+    await botSay('Pick whichever step you like on the right and I’ll build it. ✨', 1100);
+  }
+
+  function buildPlanHtml(businessNoun, steps) {
+    const stepsHtml = steps.map((group, index) => {
+      const items = group.map((pick) => `<li><b>${pick.title}</b> — ${pick.why}</li>`).join('');
+      return `<div class="plan-step"><span class="plan-badge">Step ${index + 1}</span><ul>${items}</ul></div>`;
+    }).join('');
+    return `<div class="plan-head">📋 My plan for your ${businessNoun}</div>`
+      + `<div class="plan-why">Get online &amp; selling first, then keep customers coming back, then grow.</div>`
+      + stepsHtml;
   }
 
   composer.addEventListener('submit', (event) => {
@@ -576,11 +613,6 @@
     return options[Math.floor(Math.random() * options.length)];
   }
 
-  const TOOL_INFO = {
-    'Drag & Drop': 'Design it yourself — drag blocks into place and style it visually, no code needed.',
-    'Full AI': 'Just describe what you want and AI builds the whole thing for you in one go.'
-  };
-
   function buildSuggestionCard(suggestion) {
     const minutes = suggestion.estimateMins || randomMinutes();
     const tools = suggestion.tools || [suggestion.tool];
@@ -590,7 +622,6 @@
           <div class="tool-seg">
             ${tools.map((toolName, index) => `<button type="button" class="tool-opt${index === 0 ? ' active' : ''}" data-tool="${toolName}">${toolName}</button>`).join('')}
           </div>
-          <div class="tool-info">${TOOL_INFO[selectedTool] || ''}</div>
         </div>`
       : '';
     const card = document.createElement('div');
@@ -615,8 +646,6 @@
         card.querySelectorAll('.tool-opt').forEach((other) => other.classList.remove('active'));
         option.classList.add('active');
         selectedTool = option.dataset.tool;
-        const info = card.querySelector('.tool-info');
-        if (info) info.textContent = TOOL_INFO[selectedTool] || '';
       });
     });
     card.querySelector('.btn-go').addEventListener('click', () => runBuilder(card, { ...suggestion, tool: selectedTool }));
@@ -669,14 +698,7 @@
     setTimeout(nextStep, 450);
   }
 
-  function buildLovableUrl(suggestion) {
-    const type = businessType || 'business';
-    const prompt = `Create a ${suggestion.title} for a ${type}. Make it clean, modern and production-ready.`;
-    return 'https://lovable.dev/?autosubmit=true#prompt=' + encodeURIComponent(prompt);
-  }
-
   function finishBuilder(card, suggestion) {
-    const targetUrl = suggestion.url || buildLovableUrl(suggestion);
     card.classList.add('done-state');
     card.innerHTML = `
       <div class="done-row">
@@ -688,8 +710,8 @@
       </div>
     `;
     fireConfetti(card);
-    // Best-effort auto-open; may be blocked by the popup blocker (not a direct click).
-    window.open(targetUrl, '_blank', 'noopener');
+    // Only open a real preset destination (e.g. a ready-made store); no generated links.
+    if (suggestion.url) window.open(suggestion.url, '_blank', 'noopener');
     scrollIdeasToBottom();
   }
 
