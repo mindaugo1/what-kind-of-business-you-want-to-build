@@ -355,7 +355,7 @@
       <div class="ideas-pane" id="pane-about" hidden>
         <div class="ideas-head">
           <div>
-            <h2>Tailored to your business</h2>
+            <h2>What we know about your business</h2>
           </div>
         </div>
         <div class="about-note">✨ The more we know about your business, the better we adapt every offer to fit it.</div>
@@ -439,6 +439,7 @@
     `;
   }
 
+  // Fallback quick replies (used before a hero framing is chosen).
   const QUICK_REPLIES = ['A bakery 🥐'];
 
   // Catalog of products the assistant can build. {biz} is replaced with the user's business.
@@ -573,9 +574,9 @@
 
   let answered = false;
 
-  function showQuickReplies() {
+  function showQuickReplies(replies = QUICK_REPLIES) {
     chipsEl.innerHTML = '';
-    QUICK_REPLIES.forEach((reply) => {
+    replies.forEach((reply) => {
       const chip = document.createElement('button');
       chip.className = 'chip'; chip.type = 'button'; chip.textContent = reply;
       chip.addEventListener('click', () => submitAnswer(reply));
@@ -584,12 +585,12 @@
     chipsEl.style.display = 'flex';
   }
 
-  // Framings to click through during a presentation. Edit / add freely.
+  // Framings to click through during a presentation. Each carries its own quick replies.
   const HERO_PROMPTS = [
-    { lead: 'What business do you ', accent: 'want to build' },
-    { lead: 'What problem are you ', accent: 'trying to solve' },
-    { lead: 'What do you want to ', accent: 'sell online' },
-    { lead: 'What idea are you ', accent: 'ready to launch' }
+    { lead: 'What business do you ', accent: 'want to build',
+      replies: ['A bakery 🥐'] },
+    { lead: 'What do you want to ', accent: 'improve in your business',
+      replies: ['Better manage my clients 🤝', 'Sell more 📈', 'Stop losing sales after hours 🌙'] }
   ];
 
   function addHeroGreeting() {
@@ -621,6 +622,7 @@
         heading.innerHTML = renderMarkup(HERO_PROMPTS[promptIndex]);
         heading.classList.remove('swapping');
       }, 350);
+      showQuickReplies(HERO_PROMPTS[promptIndex].replies);
     };
 
     hero.addEventListener('click', () => {
@@ -643,7 +645,7 @@
     await sleep(400);
     addHeroGreeting();
     await sleep(500);
-    showQuickReplies();
+    showQuickReplies(HERO_PROMPTS[0].replies);
   }
 
   async function submitAnswer(text) {
