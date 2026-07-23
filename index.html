@@ -518,7 +518,7 @@
         title: `${bestSeller} is your standout — make it work harder`,
         trend: { direction: TrendDirection.UP, label: 'top seller' },
         body: `${bestSeller} already pulls people in. Turn those buyers into regulars and show it off so it keeps outselling ${firstCompetitor}.`,
-        recommend: ['loyalty', 'photos', 'crm']
+        recommend: ['loyalty', 'photos', { id: 'crm', label: 'build CRM' }]
       }
     ];
   }
@@ -534,9 +534,11 @@
   function buildInsightCard(insight, businessNoun) {
     const card = document.createElement('div');
     card.className = 'insight';
-    const recommendButtons = insight.recommend.map((productId) => {
+    const recommendButtons = insight.recommend.map((recommend) => {
+      const productId = typeof recommend === 'string' ? recommend : recommend.id;
       const product = PRODUCTS[productId];
-      return `<button type="button" class="rec-btn" data-product="${productId}"><span class="rec-btn-icon">${product.icon}</span>${product.label}</button>`;
+      const buttonLabel = typeof recommend === 'string' ? product.label : recommend.label;
+      return `<button type="button" class="rec-btn" data-product="${productId}"><span class="rec-btn-icon">${product.icon}</span>${buttonLabel}</button>`;
     }).join('');
     card.innerHTML = `
       <div class="insight-head">
