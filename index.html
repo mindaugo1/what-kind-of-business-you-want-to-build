@@ -53,7 +53,6 @@
     display: flex; align-items: center; gap: 12px;
     padding: 18px 32px;
     background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--line);
     position: sticky; top: 0; z-index: 10;
   }
@@ -251,8 +250,7 @@
   .suggestion .done-row .txt span { font-size: 12px; color: var(--muted); }
 
   /* ---------- Ideas (middle column) ---------- */
-  .ideas { padding: 0; display: flex; flex-direction: column; height: calc(100vh - 140px); max-height: 900px; overflow: hidden; opacity: 0.5; transition: opacity 0.6s var(--ease); }
-  .ideas.active { opacity: 1; }
+  .ideas { padding: 0; display: flex; flex-direction: column; height: calc(100vh - 140px); max-height: 900px; overflow: hidden; }
   .ideas-tabs { display: flex; gap: 4px; padding: 14px 18px 0; border-bottom: 1px solid var(--line); flex-shrink: 0; }
   .ideas-tab { border: none; background: transparent; font-family: var(--font); font-size: 13.5px; font-weight: 700; color: var(--muted); cursor: pointer; padding: 10px 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
   .ideas-tab:hover { color: var(--ink); }
@@ -313,6 +311,62 @@
   .insight-builds { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
   .insight-builds:empty { display: none; }
 
+  /* ---------- Integrations ---------- */
+  .intg-summary { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+  .intg-stat { flex: 1; min-width: 120px; background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px; padding: 13px 15px; box-shadow: var(--shadow-sm); }
+  .intg-stat .num { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--ink); }
+  .intg-stat .num b { color: var(--brand); }
+  .intg-stat .lbl { font-size: 11.5px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+
+  .intg-sources { display: flex; flex-direction: column; gap: 22px; margin-bottom: 30px; }
+  .intg-cat-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: var(--muted); margin-bottom: 11px; }
+  .intg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 560px) { .intg-grid { grid-template-columns: 1fr; } }
+  .intg-card { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px; padding: 13px 14px; box-shadow: var(--shadow-sm); transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease); }
+  .intg-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .intg-card.connected { border-color: #c9efdd; background: linear-gradient(180deg, var(--good-soft), var(--surface) 55%); }
+  .intg-logo { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 20px; background: var(--brand-soft); border: 1px solid #ece8ff; flex-shrink: 0; }
+  .intg-card.connected .intg-logo { background: #fff; border-color: #c9efdd; }
+  .intg-meta { flex: 1; min-width: 0; }
+  .intg-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .intg-sub { font-size: 11.5px; color: var(--muted); font-weight: 500; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .intg-card.connected .intg-sub { color: var(--good); font-weight: 600; }
+  .intg-connect { font-family: var(--font); font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 7px 14px; border-radius: 999px; flex-shrink: 0; transition: all 0.18s var(--ease); }
+  .intg-connect.available { color: var(--brand); background: var(--brand-soft); border: 1px solid #e4dfff; }
+  .intg-connect.available:hover { background: #e7e2ff; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .intg-connect.linked { color: var(--muted); background: transparent; border: 1px solid var(--line-2); }
+  .intg-connect.linked:hover { color: #d1435b; border-color: #f6d5dd; background: #fdeef1; }
+
+  .intg-auto-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .intg-auto-head h3 { margin: 0 0 3px; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+  .intg-auto-head p { margin: 0; font-size: 12.5px; color: var(--muted); }
+  .intg-add-btn { font-family: var(--font); font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; padding: 9px 15px; border-radius: 999px; border: none; flex-shrink: 0; background: linear-gradient(140deg, var(--brand), var(--brand-2)); box-shadow: 0 6px 16px -6px var(--brand-ring); transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease); }
+  .intg-add-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -8px var(--brand-ring); }
+
+  .auto-list { display: flex; flex-direction: column; gap: 12px; }
+  .auto-card { background: var(--surface); border: 1px solid var(--line-2); border-radius: 16px; padding: 15px 16px; box-shadow: var(--shadow-sm); animation: fadeUp 0.4s var(--ease); }
+  .auto-card.off { opacity: 0.62; }
+  .auto-top { display: flex; align-items: center; gap: 12px; }
+  .auto-flow { flex: 1; min-width: 0; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .flow-node { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; color: var(--ink); background: var(--bg); border: 1px solid var(--line-2); border-radius: 10px; padding: 6px 10px; }
+  .flow-node .fn-ico { font-size: 15px; }
+  .flow-node .fn-tag { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 6px; }
+  .flow-node .fn-tag.trig { color: var(--brand); background: var(--brand-soft); }
+  .flow-node .fn-tag.act { color: var(--good); background: var(--good-soft); }
+  .flow-node .fn-tag.analyze { color: var(--brand-2); background: #f3edff; }
+  .flow-node.agent-node { border-style: dashed; border-color: #d9cfff; background: #faf8ff; }
+  .flow-arrow { color: var(--faint); font-size: 15px; font-weight: 800; flex-shrink: 0; }
+  .auto-desc { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.45; }
+  .auto-runs { font-size: 11.5px; color: var(--faint); font-weight: 600; margin-top: 7px; }
+  .auto-runs b { color: var(--good); }
+
+  .switch { position: relative; width: 40px; height: 23px; flex-shrink: 0; cursor: pointer; }
+  .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .switch .track { position: absolute; inset: 0; background: var(--line-2); border-radius: 999px; transition: background 0.2s var(--ease); }
+  .switch .track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 17px; height: 17px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-sm); transition: transform 0.2s var(--ease); }
+  .switch input:checked + .track { background: var(--brand); }
+  .switch input:checked + .track::after { transform: translateX(17px); }
+
   .empty { flex: 1; display: grid; place-items: center; text-align: center; min-height: 430px; }
   .empty .orb {
     width: 88px; height: 88px; border-radius: 26px; margin: 0 auto 20px;
@@ -358,6 +412,7 @@
       <div class="ideas-tabs">
         <button type="button" class="ideas-tab active" data-tab="ideas">Ideas</button>
         <button type="button" class="ideas-tab" data-tab="dashboard">Dashboard<span class="tab-live"><span class="tab-live-dot"></span>live</span></button>
+        <button type="button" class="ideas-tab" data-tab="integrations">Integrations</button>
         <button type="button" class="ideas-tab" data-tab="about">Tailored to you</button>
       </div>
 
@@ -393,6 +448,29 @@
           </div>
         </div>
         <div class="insights" id="insights" style="display:none"></div>
+      </div>
+
+      <div class="ideas-pane" id="pane-integrations" hidden>
+        <div class="ideas-head">
+          <div>
+            <h2>Connect your data</h2>
+            <p>Link the tools where your business already lives, then let our agents keep everything in sync.</p>
+          </div>
+        </div>
+        <div class="about-note">🔌 Connect a source once — every automation below can pull from it, and the Dashboard gets richer.</div>
+
+        <div class="intg-summary" id="intg-summary"></div>
+
+        <div class="intg-auto-head">
+          <div>
+            <h3>Automations</h3>
+            <p>When something happens in one tool, do something in another — and every run is saved so our agents can spot trends and suggest your next move.</p>
+          </div>
+          <button type="button" class="intg-add-btn" id="intg-add-btn">+ New automation</button>
+        </div>
+        <div class="auto-list" id="auto-list" style="margin-bottom: 30px;"></div>
+
+        <div class="intg-sources" id="intg-sources"></div>
       </div>
 
       <div class="ideas-pane" id="pane-about" hidden>
@@ -1006,6 +1084,145 @@
       setTimeout(() => confetti.remove(), 3200);
     }
   }
+
+  /* ---------- Integrations (mockup) ---------- */
+  const integrationCategories = [
+    { label: 'E-commerce / POS', sources: [
+      { id: 'hostinger', name: 'Hostinger eCommerce', icon: '🛍️', blurb: 'Orders, products, customers', account: 'thebakery.hostingersite.com' },
+      { id: 'stripe', name: 'Stripe', icon: '💳', blurb: 'Payments & payouts', account: 'acct · The Bakery' },
+      { id: 'square', name: 'Square', icon: '◼️', blurb: 'In-store POS sales', account: 'Main counter' },
+    ] },
+    { label: 'Spreadsheets / Databases', sources: [
+      { id: 'sheets', name: 'Google Sheets', icon: '📊', blurb: 'Rows & tabs', account: 'Sales tracker 2026' },
+      { id: 'airtable', name: 'Airtable', icon: '🗂️', blurb: 'Bases & records', account: 'Inventory base' },
+      { id: 'notion', name: 'Notion', icon: '📝', blurb: 'Databases & pages', account: 'Bakery workspace' },
+      { id: 'postgres', name: 'Postgres', icon: '🐘', blurb: 'SQL tables', account: 'db.thebakery.co' },
+    ] },
+    { label: 'Marketing / Social', sources: [
+      { id: 'instagram', name: 'Instagram', icon: '📸', blurb: 'Posts & engagement', account: '@thebakery' },
+      { id: 'meta-ads', name: 'Meta Ads', icon: '📣', blurb: 'Campaigns & spend', account: 'Ad account · Bakery' },
+      { id: 'reach', name: 'Hostinger Reach', icon: '✉️', blurb: 'Email campaigns & audiences', account: 'The Bakery list' },
+      { id: 'hostinger-email', name: 'Hostinger Email', icon: '📧', blurb: 'Business mailbox', account: 'hello@thebakery.co' },
+      { id: 'analytics', name: 'Google Analytics', icon: '📈', blurb: 'Traffic & conversions', account: 'thebakery.co' },
+    ] },
+    { label: 'Cloud storage', sources: [
+      { id: 'gdrive', name: 'Google Drive', icon: '📁', blurb: 'Files & folders', account: 'hello@thebakery.co' },
+      { id: 'dropbox', name: 'Dropbox', icon: '📦', blurb: 'Shared files', account: 'The Bakery team' },
+      { id: 'onedrive', name: 'OneDrive', icon: '☁️', blurb: 'Documents', account: 'The Bakery' },
+    ] },
+  ];
+  const sourceById = {};
+  integrationCategories.forEach((category) => category.sources.forEach((source) => { sourceById[source.id] = source; }));
+
+  // Which sources start connected (mockup default).
+  const connectedSources = new Set(['hostinger', 'sheets', 'instagram']);
+
+  const automations = [
+    { id: 1, trigger: 'hostinger', triggerEvent: 'New order', action: 'hostinger-email', actionEvent: 'Send an email',
+      desc: 'Every new order triggers a thank-you email in your voice — no manual follow-up.', runs: 128, enabled: true },
+    { id: 2, trigger: 'instagram', triggerEvent: 'New follower spike', action: 'reach', actionEvent: 'Add to nurture list',
+      desc: 'Turn social buzz into email subscribers automatically.', runs: 41, enabled: true },
+    { id: 3, trigger: 'stripe', triggerEvent: 'Payout received', action: 'gdrive', actionEvent: 'Save PDF statement',
+      desc: 'Bookkeeping-ready statements filed the moment you get paid.', runs: 12, enabled: false },
+  ];
+  let nextAutomationId = 4;
+
+  const intgSummaryEl = document.getElementById('intg-summary');
+  const intgSourcesEl = document.getElementById('intg-sources');
+  const autoListEl = document.getElementById('auto-list');
+  const intgAddBtn = document.getElementById('intg-add-btn');
+
+  function renderIntegrationSummary() {
+    const connectedCount = connectedSources.size;
+    const totalCount = Object.keys(sourceById).length;
+    const activeAutomations = automations.filter((automation) => automation.enabled).length;
+    const totalRuns = automations.reduce((sum, automation) => sum + automation.runs, 0);
+    intgSummaryEl.innerHTML =
+      `<div class="intg-stat"><div class="num"><b>${connectedCount}</b>/${totalCount}</div><div class="lbl">Sources connected</div></div>` +
+      `<div class="intg-stat"><div class="num">${activeAutomations}</div><div class="lbl">Active automations</div></div>` +
+      `<div class="intg-stat"><div class="num">${totalRuns.toLocaleString()}</div><div class="lbl">Tasks run this month</div></div>`;
+  }
+
+  function renderIntegrationSources() {
+    intgSourcesEl.innerHTML = integrationCategories.map((category) => {
+      const cards = category.sources.map((source) => {
+        const isConnected = connectedSources.has(source.id);
+        const subline = isConnected ? '✓ ' + source.account : source.blurb;
+        const buttonClass = isConnected ? 'linked' : 'available';
+        const buttonLabel = isConnected ? 'Connected' : 'Connect';
+        return `<div class="intg-card${isConnected ? ' connected' : ''}">`
+          + `<div class="intg-logo">${source.icon}</div>`
+          + `<div class="intg-meta"><div class="intg-name">${source.name}</div><div class="intg-sub">${subline}</div></div>`
+          + `<button type="button" class="intg-connect ${buttonClass}" data-source="${source.id}">${buttonLabel}</button>`
+          + `</div>`;
+      }).join('');
+      return `<div class="intg-section"><div class="intg-cat-label">${category.label}</div><div class="intg-grid">${cards}</div></div>`;
+    }).join('');
+  }
+
+  function renderAutomations() {
+    autoListEl.innerHTML = automations.map((automation) => {
+      const triggerSource = sourceById[automation.trigger];
+      const actionSource = sourceById[automation.action];
+      return `<div class="auto-card${automation.enabled ? '' : ' off'}" data-automation="${automation.id}">`
+        + `<div class="auto-top">`
+        + `<div class="auto-flow">`
+        + `<span class="flow-node"><span class="fn-ico">${triggerSource.icon}</span>${triggerSource.name}<span class="fn-tag trig">${automation.triggerEvent}</span></span>`
+        + `<span class="flow-arrow">→</span>`
+        + `<span class="flow-node"><span class="fn-ico">${actionSource.icon}</span>${actionSource.name}<span class="fn-tag act">${automation.actionEvent}</span></span>`
+        + `<span class="flow-arrow">→</span>`
+        + `<span class="flow-node agent-node"><span class="fn-ico">🧠</span>Agent analysis<span class="fn-tag analyze">Save for analysis</span></span>`
+        + `</div>`
+        + `<label class="switch"><input type="checkbox" data-automation="${automation.id}"${automation.enabled ? ' checked' : ''} /><span class="track"></span></label>`
+        + `</div>`
+        + `<div class="auto-desc">${automation.desc}</div>`
+        + `<div class="auto-runs">${automation.enabled ? `Ran <b>${automation.runs.toLocaleString()}×</b> this month · last run 4 min ago` : 'Paused — turn on to resume'}</div>`
+        + `</div>`;
+    }).join('');
+  }
+
+  function renderIntegrations() {
+    renderIntegrationSummary();
+    renderIntegrationSources();
+    renderAutomations();
+  }
+
+  intgSourcesEl.addEventListener('click', (clickEvent) => {
+    const connectButton = clickEvent.target.closest('.intg-connect');
+    if (!connectButton) return;
+    const sourceId = connectButton.dataset.source;
+    if (connectedSources.has(sourceId)) {
+      connectedSources.delete(sourceId);
+    } else {
+      connectedSources.add(sourceId);
+      fireConfetti(connectButton);
+    }
+    renderIntegrationSummary();
+    renderIntegrationSources();
+  });
+
+  autoListEl.addEventListener('change', (changeEvent) => {
+    const toggle = changeEvent.target.closest('input[type="checkbox"]');
+    if (!toggle) return;
+    const automation = automations.find((candidate) => candidate.id === Number(toggle.dataset.automation));
+    if (!automation) return;
+    automation.enabled = toggle.checked;
+    renderIntegrationSummary();
+    renderAutomations();
+  });
+
+  intgAddBtn.addEventListener('click', () => {
+    const connectedList = [...connectedSources];
+    const triggerId = connectedList[0] || 'hostinger';
+    const actionId = connectedList[1] || connectedList[0] || 'sheets';
+    automations.unshift({
+      id: nextAutomationId++, trigger: triggerId, triggerEvent: 'New activity', action: actionId, actionEvent: 'Sync it',
+      desc: 'Draft automation — pick the trigger and action to fit your workflow.', runs: 0, enabled: false });
+    renderIntegrations();
+    document.getElementById('pane-integrations').scrollTop = 0;
+  });
+
+  renderIntegrations();
 
   startConversation();
 </script>
