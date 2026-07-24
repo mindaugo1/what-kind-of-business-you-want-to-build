@@ -859,6 +859,10 @@
   }
 
   async function startConversation() {
+    // Populate Dashboard and "Tailored to you" up front so they're not empty
+    // while the chat is still going. The real business overwrites this once answered.
+    renderAbout('bakery');
+    renderDashboard('bakery');
     await sleep(400);
     addHeroGreeting();
     await sleep(500);
